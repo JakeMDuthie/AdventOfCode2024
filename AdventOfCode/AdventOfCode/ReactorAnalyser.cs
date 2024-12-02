@@ -34,5 +34,10 @@ namespace AdventOfCode
         {
             return _reports.Count(r => r.IsSafe());
         }
+
+        public int GetSafeReportsWithinTolerance()
+        {
+            return _reports.Count(r => r.IsSafeWithinThreshold());
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace AdventOfCode
 {
@@ -17,34 +18,66 @@ namespace AdventOfCode
             }
         }
 
+        public bool IsSafeWithinThreshold()
+        {
+            if (IsSafe())
+            {
+                return true;
+            }
+            
+            return IsSafeWithOneRemoved();
+        }
+
+        private bool IsSafeWithOneRemoved()
+        {
+            for (int i = 0; i < _levels.Length; i++)
+            {
+                var list = _levels.ToList();
+                list.RemoveAt(i);
+                
+                var tempList = list.ToArray();
+                if (AreLevelsSafe(tempList))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool IsSafe()
         {
-            if (!AllAscending() && !AllDescending())
+            return AreLevelsSafe(_levels);
+        }
+
+        private bool AreLevelsSafe(int[] levels)
+        {
+            if (!AllAscending(levels) && !AllDescending(levels))
             {
                 return false;
             }
-            
-            return GapsWithinTolerance();
+
+            return GapsWithinTolerance(levels);
         }
 
-        private bool GapsWithinTolerance()
+        private bool GapsWithinTolerance(int[] levels)
         {
-            for (var i = 0; i < _levels.Length-1; i++)
+            for (var i = 0; i < levels.Length-1; i++)
             {
-                if (Math.Abs(_levels[i] - _levels[i + 1]) > k_safetyTolerance)
+                if (Math.Abs(levels[i] - levels[i + 1]) > k_safetyTolerance)
                 {
                     return false;
                 }
             }
-            
+
             return true;
         }
 
-        private bool AllDescending()
+        private bool AllDescending(int[] levels)
         {
-            for (var i = 0; i < _levels.Length-1; i++)
+            for (var i = 0; i < levels.Length-1; i++)
             {
-                if (_levels[i] <= _levels[i + 1])
+                if (levels[i] <= levels[i + 1])
                 {
                     return false;
                 }
@@ -53,11 +86,11 @@ namespace AdventOfCode
             return true;
         }
         
-        private bool AllAscending()
+        private bool AllAscending(int[] levels)
         {
-            for (var i = 0; i < _levels.Length-1; i++)
+            for (var i = 0; i < levels.Length-1; i++)
             {
-                if (_levels[i] >= _levels[i + 1])
+                if (levels[i] >= levels[i + 1])
                 {
                     return false;
                 }

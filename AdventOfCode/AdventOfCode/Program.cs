@@ -9,6 +9,7 @@ namespace AdventOfCode
             var reactorAnalyser = new ReactorAnalyser("..\\..\\Data\\redNosedReactor.txt");
             
             Console.WriteLine($"SOLUTION pt 1 = {reactorAnalyser.GetSafeReports()}");
+            Console.WriteLine($"SOLUTION pt 2 = {reactorAnalyser.GetSafeReportsWithinTolerance()}");
         }
 
         private static void Day1()
