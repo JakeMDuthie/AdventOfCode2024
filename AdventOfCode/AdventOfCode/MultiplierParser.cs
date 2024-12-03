@@ -9,10 +9,12 @@ namespace AdventOfCode
     {
         private class Multiplier
         {
+            public int Index { get; private set; }
             private readonly int[] terms;
             
-            public Multiplier(string input)
+            public Multiplier(string input, int index)
             {
+                Index = index;
                 var regex = @"\d{1,3}";
                 var matches = Regex.Matches(input, regex);
                 
@@ -30,11 +32,15 @@ namespace AdventOfCode
             }
         }
 
-        private readonly List<Multiplier> _multipliers;
+        private readonly Dictionary<int,Multiplier> _multipliers;
+        private readonly Dictionary<int, bool> _enablerIndices;
+
+        private int _maxMultiplierIndex;
         
         public MultiplierParser(string filename)
         {
-            _multipliers = new List<Multiplier>();
+            _multipliers = new Dictionary<int,Multiplier>();
+            _enablerIndices = new Dictionary<int, bool>();
             InitialiseMultipliersFromFile(filename);
         }
 
@@ -44,13 +50,23 @@ namespace AdventOfCode
                 Path.Combine(Environment.CurrentDirectory, filename));
 
             var regex = @"mul\(\d{1,3}\,\d{1,3}\)";
+            var doDontregex = @"do\(\)|don't\(\)";
             var data = sr.ReadToEnd();
             
             var matches = Regex.Matches(data, regex);
 
             foreach (Match match in matches)
             {
-                _multipliers.Add(new Multiplier(match.Value));
+                _multipliers.Add(match.Index,new Multiplier(match.Value, match.Index));
+                _maxMultiplierIndex = match.Index;
+                Console.WriteLine(match.Value);
+            }
+            
+            var doDonts = Regex.Matches(data, doDontregex);
+
+            foreach (Match match in doDonts)
+            {
+                _enablerIndices.Add(match.Index, match.Value == "do()");
                 Console.WriteLine(match.Value);
             }
         }
@@ -59,9 +75,35 @@ namespace AdventOfCode
         {
             var value = 0;
 
-            foreach (var multiplier in _multipliers)
+            foreach (var multiplier in _multipliers.Values)
             {
                 value += multiplier.GetValue();
+            }
+            
+            return value;
+        }
+
+        public int GetValueRespectingDoDonts()
+        {
+            var value = 0;
+            var enabled = true;
+
+            for (var index = 0; index <= _maxMultiplierIndex; index++)
+            {
+                if (_enablerIndices.TryGetValue(index, out var enablerIndex))
+                {
+                    enabled = enablerIndex;
+                }
+
+                if (!enabled)
+                {
+                    continue;
+                }
+                
+                if (_multipliers.TryGetValue(index, out var multiplier))
+                {
+                    value += multiplier.GetValue();
+                }
             }
             
             return value;

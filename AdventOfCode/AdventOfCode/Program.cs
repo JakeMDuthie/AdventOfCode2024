@@ -9,6 +9,7 @@ namespace AdventOfCode
             Console.WriteLine("Day 3: Mull It Over");
             var multiplierParser = new MultiplierParser(@"..\..\Data\mullItOver.txt");
             Console.WriteLine($"SOLUTION pt 1 = {multiplierParser.GetValue()}");
+            Console.WriteLine($"SOLUTION pt 2 = {multiplierParser.GetValueRespectingDoDonts()}");
         }
 
         private static void Day2()
