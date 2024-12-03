@@ -6,6 +6,13 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 3: Mull It Over");
+            var multiplierParser = new MultiplierParser(@"..\..\Data\mullItOver.txt");
+            Console.WriteLine($"SOLUTION pt 1 = {multiplierParser.GetValue()}");
+        }
+
+        private static void Day2()
+        {
             var reactorAnalyser = new ReactorAnalyser(@"..\..\Data\redNosedReactor.txt");
             
             Console.WriteLine("Day 2: Red-Nosed Reports");
