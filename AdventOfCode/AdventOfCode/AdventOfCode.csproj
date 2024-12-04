@@ -46,6 +46,7 @@
         <Compile Include="Scripts\IdAnalyser.cs"/>
         <Compile Include="Scripts\ReactorAnalyser.cs"/>
         <Compile Include="Scripts\ReactorReport.cs"/>
+        <Compile Include="WordSearcher.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
