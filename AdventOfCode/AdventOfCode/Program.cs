@@ -9,6 +9,7 @@ namespace AdventOfCode
             Console.WriteLine("Day 4: Ceres Search");
             var wordSearcher = new WordSearcher(@"..\..\Data\wordSearch.txt");
             Console.WriteLine($"SOLUTION pt 1 = {wordSearcher.GetOccurrencesOfWord("XMAS")}");
+            Console.WriteLine($"SOLUTION pt 2 = {wordSearcher.XmasOccurrences()}");
         }
 
         private static void Day3()
