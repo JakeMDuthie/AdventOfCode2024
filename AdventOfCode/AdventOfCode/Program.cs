@@ -6,6 +6,13 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 5: Print Queue");
+            var pageOrderer = new PageOrderer(@"..\..\Data\printQueueSmall.txt");
+            Console.WriteLine($"SOLUTION pt 1 = {pageOrderer.GetTotalValueOfMiddlePagesForPrintCommandsThatSatisfyRules()}");
+        }
+
+        private static void Day4()
+        {
             Console.WriteLine("Day 4: Ceres Search");
             var wordSearcher = new WordSearcher(@"..\..\Data\wordSearch.txt");
             Console.WriteLine($"SOLUTION pt 1 = {wordSearcher.GetOccurrencesOfWord("XMAS")}");

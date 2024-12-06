@@ -40,13 +40,14 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="MultiplierParser.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Scripts\IdAnalyser.cs"/>
+        <Compile Include="Scripts\MultiplierParser.cs" />
+        <Compile Include="Scripts\PageOrderer.cs" />
         <Compile Include="Scripts\ReactorAnalyser.cs"/>
         <Compile Include="Scripts\ReactorReport.cs"/>
-        <Compile Include="WordSearcher.cs" />
+        <Compile Include="Scripts\WordSearcher.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
