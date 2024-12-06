@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    public struct Coordinate
+    public class Coordinate
     {
         public int X;
         public int Y;
@@ -27,17 +27,25 @@ namespace AdventOfCode
         private class Cell
         {
             public Coordinate Coordinate;
-            public bool Blocker { get; }
+            public bool Blocker { get; set; }
             public bool Visited { get; set; }
+            public Coordinate DirectionEnteredIn { get; set; }
 
             public Cell(int x, int y, bool blocker)
             {
                 Coordinate = new Coordinate(x,y);
                 Blocker = blocker;
             }
+
+            public void Reset()
+            {
+                Visited = false;
+                DirectionEnteredIn = new Coordinate(0, 0);
+            }
         }
 
-        private List<Cell> _cells = new List<Cell>();
+        private readonly List<Cell> _cells = new List<Cell>();
+        
         private Coordinate _guardPositionStart;
         
         public GuardMap(string filename)
@@ -90,7 +98,15 @@ namespace AdventOfCode
             return _cells.Count(c => c.Visited);
         }
 
-        public void ProcessWalk()
+        private void ResetCells()
+        {
+            foreach (var cell in _cells)
+            {
+                cell.Reset();
+            }
+        }
+
+        public bool ProcessWalk()
         {
             var directions = new List<Coordinate>
             {
@@ -101,10 +117,12 @@ namespace AdventOfCode
             };
             var directionIndex = 0;
             var direction = directions[directionIndex];
-            var guardPosition = _guardPositionStart;
+            var guardPosition = new Coordinate(_guardPositionStart.X, _guardPositionStart.Y);
+            var loopDetected = false;
+            ResetCells();
 
-            Console.WriteLine("\nBEFORE WALK:\n");
-            LogCells();
+            //Console.WriteLine("\nBEFORE WALK:\n");
+            //LogCells();
             
             while (TryGetCellAtCoordinate(guardPosition, out var cell))
             {
@@ -121,15 +139,24 @@ namespace AdventOfCode
                 }
                 else
                 {
+                    if (cell.Visited &&
+                        cell.DirectionEnteredIn.Equals(direction))
+                    {
+                        loopDetected = true;
+                        break;
+                    }
+                    
                     cell.Visited = true;
+                    cell.DirectionEnteredIn = direction;
                 }
 
                 guardPosition.X += direction.X;
                 guardPosition.Y += direction.Y;
             }
             
-            Console.WriteLine("\nAFTER WALK:\n");
-            LogCells();
+            //Console.WriteLine("\nAFTER WALK:\n");
+            //LogCells();
+            return loopDetected;
         }
 
         private void LogCells()
@@ -159,6 +186,29 @@ namespace AdventOfCode
             }
             
             Console.WriteLine(debug);
+        }
+
+        public int GetCellsThatCanBecomeBlockersToIntroduceLoops()
+        {
+            var flippableCells = _cells.Where(c => c.Visited && !c.Coordinate.Equals(_guardPositionStart)).ToList();
+            var possibleCells = 0;
+            var index = 0;
+            
+            foreach (var flippableCell in flippableCells)
+            {
+                flippableCell.Blocker = true;
+
+                if (ProcessWalk())
+                {
+                    possibleCells++;
+                }
+                
+                flippableCell.Blocker = false;
+                index++;
+                Console.WriteLine($"{index} / {flippableCells.Count} : Found So Far: {possibleCells}");
+            }
+            
+            return possibleCells;
         }
     }
 }

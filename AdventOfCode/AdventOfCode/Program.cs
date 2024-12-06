@@ -10,6 +10,7 @@ namespace AdventOfCode
             var guardMap = new GuardMap(@"..\..\Data\guardMap.txt");
             guardMap.ProcessWalk();
             Console.WriteLine($"SOLUTION pt 1 = {guardMap.GetUniqueCellsVisited()}");
+            Console.WriteLine($"SOLUTION pt 2 = {guardMap.GetCellsThatCanBecomeBlockersToIntroduceLoops()}");
         }
 
         private static void Day5()
