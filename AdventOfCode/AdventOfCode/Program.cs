@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 6: Guard Gallivant");
+            var guardMap = new GuardMap(@"..\..\Data\guardMap.txt");
+            guardMap.ProcessWalk();
+            Console.WriteLine($"SOLUTION pt 1 = {guardMap.GetUniqueCellsVisited()}");
+        }
+
+        private static void Day5()
+        {
             Console.WriteLine("Day 5: Print Queue");
             var pageOrderer = new PageOrderer(@"..\..\Data\printQueue.txt");
             Console.WriteLine($"SOLUTION pt 1 = {pageOrderer.GetTotalValueOfMiddlePagesForPrintCommandsThatSatisfyRules()}");
