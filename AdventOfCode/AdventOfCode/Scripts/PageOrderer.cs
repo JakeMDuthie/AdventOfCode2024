@@ -23,7 +23,8 @@ namespace AdventOfCode
         {
             private List<int> PageOrder { get; }
             
-            private bool _alreadySatisfies;
+            private bool _alreadyChecked;
+            private bool _checkedResult;
 
             public PrintCommand(List<int> pageOrder)
             {
@@ -35,30 +36,77 @@ namespace AdventOfCode
                 return PageOrder[PageOrder.Count/2];
             }
 
+            public override string ToString()
+            {
+                var retVal = string.Empty;
+                
+                foreach (var i in PageOrder)
+                {
+                    retVal += i + ",";
+                }
+                
+                return retVal;
+            }
+
             public bool SatisfiesOrderRules(List<OrderRule> orderRules)
             {
-                if (_alreadySatisfies)
+                if (_alreadyChecked)
                 {
-                    return true;
+                    return _checkedResult;
                 }
                 
                 for (var i = 0; i < PageOrder.Count-1; i++)
                 {
                     var startPage = PageOrder[i];
 
-                    for (var j = i; j < PageOrder.Count; j++)
+                    for (var j = i+1; j < PageOrder.Count; j++)
                     {
                         var laterPage = PageOrder[j];
 
                         if (orderRules.Any(orderRule => orderRule.Later == startPage && orderRule.Earlier == laterPage))
                         {
+                            _alreadyChecked = true;
+                            _checkedResult = false;
                             return false;
                         }
                     }
                 }
-
-                _alreadySatisfies = true;
+                
+                _alreadyChecked = true;
+                _checkedResult = true;
                 return true;
+            }
+
+            public void ReorderToSatisfyRules(List<OrderRule> orderRules)
+            {
+                //Console.WriteLine("Command before:" + ToString());
+                
+                _alreadyChecked = false;
+                var swapped = false;
+                do
+                {
+                    swapped = false;
+                    for (var i = 0; i < PageOrder.Count-1; i++)
+                    {
+                        var startPage = PageOrder[i];
+
+                        for (var j = i+1; j < PageOrder.Count; j++)
+                        {
+                            var laterPage = PageOrder[j];
+
+                            if (orderRules.Any(orderRule => orderRule.Later == startPage && orderRule.Earlier == laterPage))
+                            {
+                                // rule broken - so swap the offenders
+                                PageOrder[i] = laterPage;
+                                PageOrder[j] = startPage;
+                                swapped = true;
+                                break;
+                            }
+                        }
+                    }
+                } while (swapped);
+                
+                //Console.WriteLine("Command after:" + ToString());
             }
         }
         
@@ -142,7 +190,7 @@ namespace AdventOfCode
                     continue;
                 }
                 
-                // TODO: Reorder the print command so that it satisfies our rules
+                printCommand.ReorderToSatisfyRules(_orderRules);
                 
                 retVal += printCommand.GetMiddlePage();
             }

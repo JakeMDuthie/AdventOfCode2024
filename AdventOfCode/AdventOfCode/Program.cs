@@ -7,7 +7,7 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 5: Print Queue");
-            var pageOrderer = new PageOrderer(@"..\..\Data\printQueueSmall.txt");
+            var pageOrderer = new PageOrderer(@"..\..\Data\printQueue.txt");
             Console.WriteLine($"SOLUTION pt 1 = {pageOrderer.GetTotalValueOfMiddlePagesForPrintCommandsThatSatisfyRules()}");
             Console.WriteLine($"SOLUTION pt 2 = {pageOrderer.GetTotalValueOfMiddlePagesForPrintCommandsThatNeedToBeReorderedAfterReorderingThem()}");
         }
