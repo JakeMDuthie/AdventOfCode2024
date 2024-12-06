@@ -130,5 +130,24 @@ namespace AdventOfCode
             
             return retVal;
         }
+
+        public int GetTotalValueOfMiddlePagesForPrintCommandsThatNeedToBeReorderedAfterReorderingThem()
+        {
+            var retVal = 0;
+
+            foreach (var printCommand in _commands)
+            {
+                if (printCommand.SatisfiesOrderRules(_orderRules))
+                {
+                    continue;
+                }
+                
+                // TODO: Reorder the print command so that it satisfies our rules
+                
+                retVal += printCommand.GetMiddlePage();
+            }
+            
+            return retVal;
+        }
     }
 }
