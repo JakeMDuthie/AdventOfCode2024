@@ -20,6 +20,11 @@ namespace AdventOfCode
         {
             return X == other.X && Y == other.Y;
         }
+
+        public override int GetHashCode()
+        {
+            return X * 131 + Y;
+        }
     }
     
     public class GuardMap
@@ -44,7 +49,7 @@ namespace AdventOfCode
             }
         }
 
-        private readonly List<Cell> _cells = new List<Cell>();
+        private readonly Dictionary<int,Cell> _cells = new Dictionary<int,Cell>();
         
         private Coordinate _guardPositionStart;
         
@@ -70,11 +75,13 @@ namespace AdventOfCode
                 {
                     if (cells[x] == '#')
                     {
-                        _cells.Add(new Cell(x, y, true));
+                        var cell = new Cell(x, y, true);
+                        _cells.Add(cell.Coordinate.GetHashCode(), cell);
                     }
                     else if (cells[x] == '.' || cells[x] == '^')
                     {
-                        _cells.Add(new Cell(x, y, false));
+                        var cell = new Cell(x, y, false);
+                        _cells.Add(cell.Coordinate.GetHashCode(), cell);
                         if (cells[x] == '^')
                         {
                             _guardPositionStart = new Coordinate(x, y);
@@ -89,18 +96,17 @@ namespace AdventOfCode
 
         private bool TryGetCellAtCoordinate(Coordinate coordinate, out Cell cell)
         {
-            cell = _cells.FirstOrDefault(c => c.Coordinate.Equals(coordinate));
-            return cell != null;
+            return _cells.TryGetValue(coordinate.GetHashCode(), out cell);
         }
 
         public int GetUniqueCellsVisited()
         {
-            return _cells.Count(c => c.Visited);
+            return _cells.Values.Count(c => c.Visited);
         }
 
         private void ResetCells()
         {
-            foreach (var cell in _cells)
+            foreach (var cell in _cells.Values)
             {
                 cell.Reset();
             }
@@ -163,7 +169,7 @@ namespace AdventOfCode
         {
             var y = 0;
             var debug = string.Empty;
-            foreach (var cell in _cells)
+            foreach (var cell in _cells.Values)
             {
                 if (cell.Coordinate.Y != y)
                 {
@@ -190,7 +196,7 @@ namespace AdventOfCode
 
         public int GetCellsThatCanBecomeBlockersToIntroduceLoops()
         {
-            var flippableCells = _cells.Where(c => c.Visited && !c.Coordinate.Equals(_guardPositionStart)).ToList();
+            var flippableCells = _cells.Values.Where(c => c.Visited && !c.Coordinate.Equals(_guardPositionStart)).ToList();
             var possibleCells = 0;
             var index = 0;
             
