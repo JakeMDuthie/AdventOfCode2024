@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 7: Bridge Repair");
+            var operatorCalibrator = new OperatorCalibrator(@"..\..\Data\bridgeRepair.txt");
+            Console.WriteLine($"SOLUTION pt 1 = {operatorCalibrator.GetTotalCalibrationResult(false)}");
+            Console.WriteLine($"SOLUTION pt 2 = {operatorCalibrator.GetTotalCalibrationResult(true)}");
+        }
+
+        private static void Day6()
+        {
             Console.WriteLine("Day 6: Guard Gallivant");
             var guardMap = new GuardMap(@"..\..\Data\guardMap.txt");
             guardMap.ProcessWalk();
