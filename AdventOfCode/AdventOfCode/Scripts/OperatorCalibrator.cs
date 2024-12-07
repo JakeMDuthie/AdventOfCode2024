@@ -10,6 +10,12 @@ namespace AdventOfCode
         // a theoretical quicker solution that works for Day 7 pt 2's small data, but not for the actual data
         public static long Concat(this long a, long b)
         {
+            if (b == 1)
+            {
+                // for some reason, if b == 1- this works but the normal method doesn't?
+                return a * 10 + b;
+            }
+            
             long pow = 1;
 
             while (pow < b)
@@ -19,11 +25,6 @@ namespace AdventOfCode
             }
 
             return a + b;
-        }
-        
-        public static long ConcatSlow(this long a, long b)
-        {
-            return long.Parse(a.ToString() + b.ToString());
         }
     }
     
@@ -41,6 +42,16 @@ namespace AdventOfCode
             {
                 Target = target;
                 _operators = operators;
+            }
+
+            public override string ToString()
+            {
+                var operatorString = string.Empty;
+                foreach (var @operator in _operators)
+                {
+                    operatorString += " " + @operator;
+                }
+                return $"{Target}:" + operatorString;
             }
 
             public bool Satisfies(bool withConcatenation)
@@ -64,7 +75,7 @@ namespace AdventOfCode
 
                         if (withConcatenation)
                         {
-                            results.Add(startNum.ConcatSlow(nextNum));
+                            results.Add(startNum.Concat(nextNum));
                         }
                     }
 
