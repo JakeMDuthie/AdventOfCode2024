@@ -5,38 +5,16 @@ using System.Linq;
 
 namespace AdventOfCode
 {
-    public class Coordinate
-    {
-        public int X;
-        public int Y;
-
-        public Coordinate(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public bool Equals(Coordinate other)
-        {
-            return X == other.X && Y == other.Y;
-        }
-
-        public override int GetHashCode()
-        {
-            return X * 131 + Y;
-        }
-    }
-    
     public class GuardMap
     {
-        private class Cell
+        private class GuardMapCell: ICell
         {
             public Coordinate Coordinate;
             public bool Blocker { get; set; }
             public bool Visited { get; set; }
             public Coordinate DirectionEnteredIn { get; set; }
 
-            public Cell(int x, int y, bool blocker)
+            public GuardMapCell(int x, int y, bool blocker)
             {
                 Coordinate = new Coordinate(x,y);
                 Blocker = blocker;
@@ -49,7 +27,7 @@ namespace AdventOfCode
             }
         }
 
-        private readonly Dictionary<int,Cell> _cells = new Dictionary<int,Cell>();
+        private readonly CellMap<GuardMapCell> _cells = new CellMap<GuardMapCell>();
         
         private Coordinate _guardPositionStart;
         
@@ -75,13 +53,13 @@ namespace AdventOfCode
                 {
                     if (cells[x] == '#')
                     {
-                        var cell = new Cell(x, y, true);
-                        _cells.Add(cell.Coordinate.GetHashCode(), cell);
+                        var cell = new GuardMapCell(x, y, true);
+                        _cells.AddCell(cell.Coordinate, cell);
                     }
                     else if (cells[x] == '.' || cells[x] == '^')
                     {
-                        var cell = new Cell(x, y, false);
-                        _cells.Add(cell.Coordinate.GetHashCode(), cell);
+                        var cell = new GuardMapCell(x, y, false);
+                        _cells.AddCell(cell.Coordinate, cell);
                         if (cells[x] == '^')
                         {
                             _guardPositionStart = new Coordinate(x, y);
@@ -94,9 +72,9 @@ namespace AdventOfCode
             }
         }
 
-        private bool TryGetCellAtCoordinate(Coordinate coordinate, out Cell cell)
+        private bool TryGetCellAtCoordinate(Coordinate coordinate, out GuardMapCell guardMapCell)
         {
-            return _cells.TryGetValue(coordinate.GetHashCode(), out cell);
+            return _cells.TryGetCellAtCoordinate(coordinate, out guardMapCell);
         }
 
         public int GetUniqueCellsVisited()
