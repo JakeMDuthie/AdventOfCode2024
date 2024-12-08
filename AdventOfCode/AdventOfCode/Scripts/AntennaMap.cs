@@ -107,6 +107,42 @@ namespace AdventOfCode
                 }
             }
         }
+        
+        public void GenerateAntinodesWithResonance()
+        {
+            Console.WriteLine("Generating Antinodes With Resonance");
+            var total = _sharedFrequencies.Values.Sum(values => values.Count);
+            var index = 0;
+            
+            foreach (var kvp in _sharedFrequencies)
+            {
+                foreach (var firstCell in kvp.Value)
+                {
+                    index++;
+                    Console.WriteLine($"{index} / {total}");
+                    foreach (var otherCell in kvp.Value)
+                    {
+                        if (firstCell.Coordinate == otherCell.Coordinate)
+                        {
+                            continue;
+                        }
+
+                        firstCell.TrySetIsAntinode();
+
+                        var reflection = firstCell.Coordinate.GetReflection(otherCell.Coordinate);
+                        var nextOther = firstCell.Coordinate;
+
+                        while (_map.TryGetCellAtCoordinate(reflection, out var cell))
+                        {
+                            cell.TrySetIsAntinode();
+                            var temp = new Coordinate(reflection.X, reflection.Y);
+                            reflection = reflection.GetReflection(nextOther);
+                            nextOther = temp;
+                        }
+                    }
+                }
+            }
+        }
 
         public int GetUniqueAntinodes()
         {

@@ -1,3 +1,5 @@
+using System;
+
 namespace AdventOfCode
 {
     public class Coordinate
@@ -24,6 +26,11 @@ namespace AdventOfCode
         public Coordinate GetReflection(Coordinate other)
         {
             return new Coordinate(this.X + (this.X - other.X), this.Y + (this.Y - other.Y));
+        }
+
+        public Coordinate GetAbsDistance(Coordinate other)
+        {
+            return new Coordinate(Math.Abs(other.X - this.X), Math.Abs(other.Y - this.Y));
         }
     }
 }

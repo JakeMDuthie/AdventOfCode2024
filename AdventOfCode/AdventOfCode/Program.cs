@@ -10,6 +10,8 @@ namespace AdventOfCode
             var antennaMap = new AntennaMap(@"..\..\Data\antennaMap.txt");
             antennaMap.GenerateAntinodes();
             Console.WriteLine($"SOLUTION pt 1 = {antennaMap.GetUniqueAntinodes()}");
+            antennaMap.GenerateAntinodesWithResonance();
+            Console.WriteLine($"SOLUTION pt 2 = {antennaMap.GetUniqueAntinodes()}");
         }
 
         private static void Day7()
