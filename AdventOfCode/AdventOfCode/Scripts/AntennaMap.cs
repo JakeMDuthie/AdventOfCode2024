@@ -74,6 +74,14 @@ namespace AdventOfCode
 
         public void GenerateAntinodes()
         {
+            Console.WriteLine("Generating Antinodes");
+            var total = 0;
+            foreach (var values in _sharedFrequencies.Values)
+            {
+                total += (values.Count-1)*values.Count;
+            }
+            
+            var index = 0;
             foreach (var kvp in _sharedFrequencies)
             {
                 foreach (var firstCell in kvp.Value)
@@ -84,6 +92,8 @@ namespace AdventOfCode
                         {
                             continue;
                         }
+                        index++;
+                        Console.WriteLine($"{index} / {total}");
                         
                         var reflection = firstCell.Coordinate.GetReflection(otherCell.Coordinate);
 

@@ -7,7 +7,7 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 8: Resonant Collinearity");
-            var antennaMap = new AntennaMap(@"..\..\Data\antennaMapSmall.txt");
+            var antennaMap = new AntennaMap(@"..\..\Data\antennaMap.txt");
             antennaMap.GenerateAntinodes();
             Console.WriteLine($"SOLUTION pt 1 = {antennaMap.GetUniqueAntinodes()}");
         }
