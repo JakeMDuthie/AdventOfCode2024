@@ -1,11 +1,9 @@
-using System;
-
 namespace AdventOfCode
 {
     public class Coordinate
     {
-        public int X;
-        public int Y;
+        public readonly int X;
+        public readonly int Y;
 
         public Coordinate(int x, int y)
         {
@@ -27,10 +25,15 @@ namespace AdventOfCode
         {
             return new Coordinate(this.X + (this.X - other.X), this.Y + (this.Y - other.Y));
         }
-
-        public Coordinate GetAbsDistance(Coordinate other)
+        
+        public static Coordinate operator +(Coordinate c1, Coordinate c2)
         {
-            return new Coordinate(Math.Abs(other.X - this.X), Math.Abs(other.Y - this.Y));
+            return new Coordinate(c1.X + c2.X, c1.Y + c2.Y);
+        }
+        
+        public static Coordinate operator -(Coordinate c1, Coordinate c2)
+        {
+            return new Coordinate(c1.X - c2.X, c1.Y - c2.Y);
         }
     }
 }

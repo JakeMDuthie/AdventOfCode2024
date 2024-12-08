@@ -112,8 +112,7 @@ namespace AdventOfCode
             {
                 if (cell.Blocker)
                 {
-                    guardPosition.X -= direction.X;
-                    guardPosition.Y -= direction.Y;
+                    guardPosition -= direction;
                     directionIndex++;
                     if (directionIndex >= directions.Count)
                     {
@@ -134,8 +133,7 @@ namespace AdventOfCode
                     cell.DirectionEnteredIn = direction;
                 }
 
-                guardPosition.X += direction.X;
-                guardPosition.Y += direction.Y;
+                guardPosition += direction;
             }
             
             //Console.WriteLine("\nAFTER WALK:\n");
