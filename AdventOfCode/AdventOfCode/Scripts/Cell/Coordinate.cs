@@ -20,5 +20,10 @@ namespace AdventOfCode
         {
             return X * 131 + Y;
         }
+
+        public Coordinate GetReflection(Coordinate other)
+        {
+            return new Coordinate(this.X + (this.X - other.X), this.Y + (this.Y - other.Y));
+        }
     }
 }

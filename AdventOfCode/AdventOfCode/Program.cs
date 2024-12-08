@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 8: Resonant Collinearity");
+            var antennaMap = new AntennaMap(@"..\..\Data\antennaMapSmall.txt");
+            antennaMap.GenerateAntinodes();
+            Console.WriteLine($"SOLUTION pt 1 = {antennaMap.GetUniqueAntinodes()}");
+        }
+
+        private static void Day7()
+        {
             Console.WriteLine("Day 7: Bridge Repair");
             var operatorCalibrator = new OperatorCalibrator(@"..\..\Data\bridgeRepair.txt");
             Console.WriteLine($"SOLUTION pt 1 = {operatorCalibrator.GetTotalCalibrationResult(false)}");
