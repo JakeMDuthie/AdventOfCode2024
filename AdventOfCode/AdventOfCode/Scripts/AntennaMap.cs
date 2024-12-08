@@ -120,14 +120,14 @@ namespace AdventOfCode
                 {
                     index++;
                     Console.WriteLine($"{index} / {total}");
+                    firstCell.TrySetIsAntinode();
+                    
                     foreach (var otherCell in kvp.Value)
                     {
                         if (firstCell.Coordinate == otherCell.Coordinate)
                         {
                             continue;
                         }
-
-                        firstCell.TrySetIsAntinode();
 
                         var reflection = firstCell.Coordinate.GetReflection(otherCell.Coordinate);
                         var nextOther = firstCell.Coordinate;
