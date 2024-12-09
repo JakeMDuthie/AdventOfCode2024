@@ -74,12 +74,66 @@ namespace AdventOfCode
 
         public void Defragment()
         {
-            throw new NotImplementedException();
+            var emptyIndex = 0;
+            var entryIndex = _disk.Count - 1;
+
+            while (emptyIndex < entryIndex)
+            {
+                emptyIndex = GetNextEmptyIndex(emptyIndex);
+                entryIndex = GetNextIdIndex(entryIndex);
+                
+                if(emptyIndex >= entryIndex) break;
+                
+                var temp = _disk[entryIndex];
+                _disk[entryIndex] = _disk[emptyIndex];
+                _disk[emptyIndex] = temp;
+                Console.WriteLine($"Swap {emptyIndex} with {entryIndex}");
+            }
         }
 
-        public int GetChecksum()
+        private int GetNextEmptyIndex(int startingPoint)
         {
-            var retVal = 0;
+            for (var i = startingPoint; i < _disk.Count; i++)
+            {
+                if (_disk[i] is DiskEmptySpace)
+                {
+                    return i;
+                }
+            }
+            
+            return -1;
+        }
+
+        private int GetNextIdIndex(int startingPoint)
+        {
+            for (var i = startingPoint; i >= 0; i--)
+            {
+                if (_disk[i] is DiskIdSpace)
+                {
+                    return i;
+                }
+            }
+            
+            return -1;
+        }
+
+        public ulong GetChecksum()
+        {
+            ulong retVal = 0;
+
+            for (var i = 0; i < _disk.Count; i++)
+            {
+                if (_disk[i] is DiskEmptySpace)
+                {
+                    break;
+                }
+
+                if (_disk[i] is DiskIdSpace idSpace)
+                {
+                    retVal += (ulong)(idSpace.Id * i);
+                }
+            }
+            
             return retVal;
         }
     }

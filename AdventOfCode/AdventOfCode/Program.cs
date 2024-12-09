@@ -7,9 +7,10 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 9: Disk Fragmenter");
-            var diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragmentSmall.txt");
-            Console.WriteLine(diskDefragmenter.ToString());
+            var diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragment.txt");
+            //Console.WriteLine(diskDefragmenter.ToString());
             diskDefragmenter.Defragment();
+            //Console.WriteLine(diskDefragmenter.ToString());
             Console.WriteLine($"SOLUTION pt 1 = {diskDefragmenter.GetChecksum()}");
         }
 
