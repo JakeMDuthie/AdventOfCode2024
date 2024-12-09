@@ -29,7 +29,7 @@ namespace AdventOfCode
         
         public override string ToString()
         {
-            return Id.ToString();
+            return Id % 2 == 0 ? "#" : "=";
         }
     }
 
@@ -71,7 +71,6 @@ namespace AdventOfCode
     public class DiskDefragmenter
     {
         private readonly List<IDiskEntry> _disk = new List<IDiskEntry>();
-        private int _topId = 0;
         
         public DiskDefragmenter(string filename)
         {
@@ -90,7 +89,6 @@ namespace AdventOfCode
                     if (addingNumber)
                     {
                         _disk.Add(new DiskIdSpace(id));
-                        _topId = id;
                     }
                     else
                     {
@@ -141,7 +139,7 @@ namespace AdventOfCode
                 var idSection = idSections[i];
                 Console.WriteLine($"Defragment {idSection.Id} at index {idSection.StartIndex} with length {idSection.Length}");
 
-                if (TryGetEmptySectionOfSize(emptySections, idSection.Length, out var emptySection))
+                if (TryGetEmptySectionForSection(emptySections, idSection, out var emptySection))
                 {
                     Console.WriteLine($"Empty Section found at index {emptySection.StartIndex} with length {emptySection.Length}");
                     
@@ -168,15 +166,22 @@ namespace AdventOfCode
             }
         }
 
-        private bool TryGetEmptySectionOfSize(List<EmptySection> emptySections, int length, out EmptySection emptySection)
+        private bool TryGetEmptySectionForSection(List<EmptySection> emptySections, IdSection idSection, out EmptySection emptySection)
         {
             emptySection = null;
             foreach (var section in emptySections)
             {
-                if (section.Length < length)
+                if (section.Length < idSection.Length)
                 {
                     continue;
                 }
+
+                if (section.StartIndex > idSection.StartIndex)
+                {
+                    // empty section must come earlier
+                    break;
+                }
+                
                 emptySection = section;
                 return true;
             }

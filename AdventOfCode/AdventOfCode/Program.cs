@@ -12,11 +12,13 @@ namespace AdventOfCode
             diskDefragmenter.Defragment();
             //Console.WriteLine(diskDefragmenter.ToString());
             Console.WriteLine($"SOLUTION pt 1 = {diskDefragmenter.GetChecksum()}");
-            diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragmentSmall.txt");
+            diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragment.txt");
+            //Console.WriteLine("Before: \n");
             //Console.WriteLine(diskDefragmenter.ToString());
             diskDefragmenter.DefragmentBySection();
+            //Console.WriteLine("After: \n");
             //Console.WriteLine(diskDefragmenter.ToString());
-            Console.WriteLine($"SOLUTION pt 1 = {diskDefragmenter.GetChecksum()}");
+            Console.WriteLine($"SOLUTION pt 2 = {diskDefragmenter.GetChecksum()}");
         }
 
         private static void Day8()
