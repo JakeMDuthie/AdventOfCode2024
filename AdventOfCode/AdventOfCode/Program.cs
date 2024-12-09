@@ -6,6 +6,15 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 9: Disk Fragmenter");
+            var diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragmentSmall.txt");
+            Console.WriteLine(diskDefragmenter.ToString());
+            diskDefragmenter.Defragment();
+            Console.WriteLine($"SOLUTION pt 1 = {diskDefragmenter.GetChecksum()}");
+        }
+
+        private static void Day8()
+        {
             Console.WriteLine("Day 8: Resonant Collinearity");
             var antennaMap = new AntennaMap(@"..\..\Data\antennaMap.txt");
             antennaMap.GenerateAntinodes();
