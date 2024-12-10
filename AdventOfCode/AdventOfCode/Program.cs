@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 10: Hoof It");
+            var trailFinder = new TrailFinder(@"..\..\Data\trailMap.txt");
+            trailFinder.MapTrailheads();
+            Console.WriteLine($"SOLUTION pt 1 = {trailFinder.GetTotalTrailheadScores()}");
+        }
+
+        private static void Day9()
+        {
             Console.WriteLine("Day 9: Disk Fragmenter");
             var diskDefragmenter = new DiskDefragmenter(@"..\..\Data\diskDefragmentSmall.txt");
             //Console.WriteLine(diskDefragmenter.ToString());

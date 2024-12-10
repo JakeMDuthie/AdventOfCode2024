@@ -54,6 +54,7 @@
         <Compile Include="Scripts\PageOrderer.cs" />
         <Compile Include="Scripts\ReactorAnalyser.cs"/>
         <Compile Include="Scripts\ReactorReport.cs"/>
+        <Compile Include="Scripts\TrailFinder.cs" />
         <Compile Include="Scripts\WordSearcher.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
