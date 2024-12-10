@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AdventOfCode
 {
@@ -24,6 +25,7 @@ namespace AdventOfCode
 
             private TrailCell StartCell { get; }
             public int Score { get; private set; }
+            public int ScoreWithDupes { get; private set; }
 
             public Trail(TrailCell startCell)
             {
@@ -72,6 +74,48 @@ namespace AdventOfCode
                 
                 Console.WriteLine($"Score: {Score}");
             }
+
+            public void FindPossibleRoutesWithDupes(CellMap<TrailCell> map)
+            {
+                var cells = new List<TrailCell> { StartCell };
+                var nextCells = new List<TrailCell>();
+                var directions = new List<Coordinate>
+                {
+                    new Coordinate(0, -1),
+                    new Coordinate(1, 0),
+                    new Coordinate(0, 1),
+                    new Coordinate(-1, 0)
+                };
+
+                while (cells.Count > 0)
+                {
+                    foreach (var trailCell in cells)
+                    {
+                        foreach (var direction in directions)
+                        {
+                            if (!map.TryGetCellAtCoordinate(trailCell.Coordinate + direction, out var nextCell) ||
+                                nextCell.Height != trailCell.Height + 1)
+                            {
+                                continue;
+                            }
+
+                            if (nextCell.Height == k_peakHeight)
+                            {
+                                ScoreWithDupes++;
+                                continue;
+                            }
+                            
+                            nextCells.Add(nextCell);
+                        }
+                    }
+                    
+                    cells.Clear();
+                    cells.AddRange(nextCells);
+                    nextCells.Clear();
+                }
+                
+                Console.WriteLine($"Score with dupes: {ScoreWithDupes}");
+            }
         }
         
         private readonly CellMap<TrailCell> _map = new CellMap<TrailCell>();
@@ -116,14 +160,12 @@ namespace AdventOfCode
 
         public int GetTotalTrailheadScores()
         {
-            var result = 0;
+            return _trails.Sum(trail => trail.Score);
+        }
 
-            foreach (var trail in _trails)
-            {
-                result += trail.Score;
-            }
-            
-            return result;
+        public int GetTotalTrailheadScoresWithDupes()
+        {
+            return _trails.Sum(trail => trail.ScoreWithDupes);
         }
 
         public void MapTrailheads()
@@ -135,6 +177,19 @@ namespace AdventOfCode
             {
                 Console.WriteLine($"{++index}/{_trails.Count}");
                 trail.FindPossibleRoutes(_map);
+                Console.WriteLine("");
+            }
+        }
+
+        public void MapTrailheadsWithDupes()
+        {
+            Console.WriteLine("Mapping trail heads with dupes");
+            Console.WriteLine($"Total trail heads: {_trails.Count}");
+            var index = 0;
+            foreach (var trail in _trails)
+            {
+                Console.WriteLine($"{++index}/{_trails.Count}");
+                trail.FindPossibleRoutesWithDupes(_map);
                 Console.WriteLine("");
             }
         }

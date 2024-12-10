@@ -10,6 +10,8 @@ namespace AdventOfCode
             var trailFinder = new TrailFinder(@"..\..\Data\trailMap.txt");
             trailFinder.MapTrailheads();
             Console.WriteLine($"SOLUTION pt 1 = {trailFinder.GetTotalTrailheadScores()}");
+            trailFinder.MapTrailheadsWithDupes();
+            Console.WriteLine($"SOLUTION pt 2 = {trailFinder.GetTotalTrailheadScoresWithDupes()}");
         }
 
         private static void Day9()
