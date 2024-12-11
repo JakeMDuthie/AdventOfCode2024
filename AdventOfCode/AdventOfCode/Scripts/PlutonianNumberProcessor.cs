@@ -7,7 +7,7 @@ namespace AdventOfCode
     public interface INumberRule
     {
         bool SatisfiesRule(ulong input);
-        void Modify(ulong input, List<ulong> outputs);
+        void Modify(KeyValuePair<ulong, ulong> input, Dictionary<ulong, ulong> outputs);
     }
 
     public class ZeroRule : INumberRule
@@ -17,9 +17,16 @@ namespace AdventOfCode
             return input == 0;
         }
 
-        public void Modify(ulong input, List<ulong> outputs)
+        public void Modify(KeyValuePair<ulong, ulong> input, Dictionary<ulong, ulong> outputs)
         {
-            outputs.Add(1);
+            if (outputs.ContainsKey(1))
+            {
+                outputs[1] += input.Value;
+            }
+            else
+            {
+                outputs.Add(1, input.Value);
+            }
         }
     }
 
@@ -32,16 +39,32 @@ namespace AdventOfCode
             return digitCount % 2 == 0;
         }
 
-        public void Modify(ulong input, List<ulong> outputs)
+        public void Modify(KeyValuePair<ulong, ulong> input, Dictionary<ulong, ulong> outputs)
         {
-            var inputAsString = input.ToString();
+            var inputAsString = input.Key.ToString();
             var halfLength = inputAsString.Length/2;
             
             var substring = inputAsString.Substring(0, halfLength);
-            outputs.Add(ulong.Parse(substring));
+            var key = ulong.Parse(substring);
+            if (outputs.ContainsKey(key))
+            {
+                outputs[key] += input.Value;
+            }
+            else
+            {
+                outputs.Add(key, input.Value);
+            }
             
             substring = inputAsString.Substring(halfLength, halfLength);
-            outputs.Add(ulong.Parse(substring));
+            key = ulong.Parse(substring);
+            if (outputs.ContainsKey(key))
+            {
+                outputs[key] += input.Value;
+            }
+            else
+            {
+                outputs.Add(key, input.Value);
+            }
         }
     }
 
@@ -52,18 +75,27 @@ namespace AdventOfCode
             return true;
         }
 
-        public void Modify(ulong input, List<ulong> outputs)
+        public void Modify(KeyValuePair<ulong, ulong> input, Dictionary<ulong, ulong> outputs)
         {
-            outputs.Add(input * 2024);
+            var newKey = input.Key * 2024;
+            
+            if (outputs.ContainsKey(newKey))
+            {
+                outputs[newKey] += input.Value;
+            }
+            else
+            {
+                outputs.Add(newKey, input.Value);
+            }
         }
     }
     
     public class PlutonianNumberProcessor
     {
         private readonly List<ulong> _startingNumbers = new List<ulong>();
+        private readonly List<INumberRule> _rules = new List<INumberRule>();
         
-        private List<ulong> _lastBlinkedStones = new List<ulong>();
-        private List<INumberRule> _rules = new List<INumberRule>();
+        private Dictionary<ulong,ulong> _lastBlinkedStones = new Dictionary<ulong,ulong>();
         
         public PlutonianNumberProcessor(string filename)
         {
@@ -85,22 +117,38 @@ namespace AdventOfCode
             CreateRules();
         }
 
-        public int StoneCount => _lastBlinkedStones.Count;
+        public ulong StoneCount => GetLastBlinkedStonesCount();
+
+        private ulong GetLastBlinkedStonesCount()
+        {
+            ulong result = 0;
+
+            foreach (var number in _lastBlinkedStones)
+            {
+                result += (ulong)number.Value;
+            }
+            
+            return result;
+        }
 
         public void HandleBlinks(int blinkCount)
         {
-            _lastBlinkedStones.AddRange(_startingNumbers);
+            _lastBlinkedStones.Clear();
+            foreach (var startingNumber in _startingNumbers)
+            {
+                _lastBlinkedStones.Add(startingNumber, 1);
+            }
             
             Console.WriteLine("Initial Arrangement:");
             //Console.WriteLine(NumbersListToString() + "\n");
-            Console.WriteLine($"Stones = {_lastBlinkedStones.Count}");
+            Console.WriteLine($"Stones = {StoneCount}");
             
             for (var i = 0; i < blinkCount; i++)
             {
                 _lastBlinkedStones = ProcessRulesForStones(_lastBlinkedStones);
                 Console.WriteLine($"After {i+1} blink(s):");
                 //Console.WriteLine(NumbersListToString() + "\n");
-                Console.WriteLine($"Stones = {_lastBlinkedStones.Count}");
+                Console.WriteLine($"Stones = {StoneCount}");
             }
         }
 
@@ -116,15 +164,15 @@ namespace AdventOfCode
             return result;
         }
 
-        private List<ulong> ProcessRulesForStones(List<ulong> lastBlinkedStones)
+        private Dictionary<ulong,ulong> ProcessRulesForStones(Dictionary<ulong,ulong> lastBlinkedStones)
         {
-            var result = new List<ulong>();
+            var result = new Dictionary<ulong,ulong>();
 
             foreach (var number in lastBlinkedStones)
             {
                 foreach (var numberRule in _rules)
                 {
-                    if (!numberRule.SatisfiesRule(number))
+                    if (!numberRule.SatisfiesRule(number.Key))
                     {
                         continue;
                     }

@@ -10,6 +10,8 @@ namespace AdventOfCode
             var numberProcessor = new PlutonianNumberProcessor(@"..\..\Data\numberStones.txt");
             numberProcessor.HandleBlinks(25);
             Console.WriteLine($"SOLUTION pt 1 = Stones after blinking {numberProcessor.StoneCount}");
+            numberProcessor.HandleBlinks(75);
+            Console.WriteLine($"SOLUTION pt 2 = Stones after blinking {numberProcessor.StoneCount}");
         }
 
         private static void Day10()
