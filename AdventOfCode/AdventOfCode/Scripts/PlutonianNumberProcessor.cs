@@ -6,18 +6,18 @@ namespace AdventOfCode
 {
     public interface INumberRule
     {
-        bool SatisfiesRule(uint input);
-        void Modify(uint input, List<uint> outputs);
+        bool SatisfiesRule(ulong input);
+        void Modify(ulong input, List<ulong> outputs);
     }
 
     public class ZeroRule : INumberRule
     {
-        public bool SatisfiesRule(uint input)
+        public bool SatisfiesRule(ulong input)
         {
             return input == 0;
         }
 
-        public void Modify(uint input, List<uint> outputs)
+        public void Modify(ulong input, List<ulong> outputs)
         {
             outputs.Add(1);
         }
@@ -25,34 +25,34 @@ namespace AdventOfCode
 
     public class EvenRule : INumberRule
     {
-        public bool SatisfiesRule(uint input)
+        public bool SatisfiesRule(ulong input)
         {
             var digitCount = 
                 input == 0 ? 1 : 1 + (int)Math.Log10(Math.Abs((double)input));
             return digitCount % 2 == 0;
         }
 
-        public void Modify(uint input, List<uint> outputs)
+        public void Modify(ulong input, List<ulong> outputs)
         {
             var inputAsString = input.ToString();
             var halfLength = inputAsString.Length/2;
             
             var substring = inputAsString.Substring(0, halfLength);
-            outputs.Add(uint.Parse(substring));
+            outputs.Add(ulong.Parse(substring));
             
             substring = inputAsString.Substring(halfLength, halfLength);
-            outputs.Add(uint.Parse(substring));
+            outputs.Add(ulong.Parse(substring));
         }
     }
 
     public class DefaultRule : INumberRule
     {
-        public bool SatisfiesRule(uint input)
+        public bool SatisfiesRule(ulong input)
         {
             return true;
         }
 
-        public void Modify(uint input, List<uint> outputs)
+        public void Modify(ulong input, List<ulong> outputs)
         {
             outputs.Add(input * 2024);
         }
@@ -60,9 +60,9 @@ namespace AdventOfCode
     
     public class PlutonianNumberProcessor
     {
-        private readonly List<uint> _startingNumbers = new List<uint>();
+        private readonly List<ulong> _startingNumbers = new List<ulong>();
         
-        private List<uint> _lastBlinkedStones = new List<uint>();
+        private List<ulong> _lastBlinkedStones = new List<ulong>();
         private List<INumberRule> _rules = new List<INumberRule>();
         
         public PlutonianNumberProcessor(string filename)
@@ -76,7 +76,7 @@ namespace AdventOfCode
             
             foreach (var numberString in numberStrings)
             {
-                if (uint.TryParse(numberString, out var number))
+                if (ulong.TryParse(numberString, out var number))
                 {
                     _startingNumbers.Add(number);    
                 }
@@ -116,9 +116,9 @@ namespace AdventOfCode
             return result;
         }
 
-        private List<uint> ProcessRulesForStones(List<uint> lastBlinkedStones)
+        private List<ulong> ProcessRulesForStones(List<ulong> lastBlinkedStones)
         {
-            var result = new List<uint>();
+            var result = new List<ulong>();
 
             foreach (var number in lastBlinkedStones)
             {

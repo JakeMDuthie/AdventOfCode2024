@@ -9,7 +9,7 @@ namespace AdventOfCode
             Console.WriteLine("Day 11: Plutonian Pebbles");
             var numberProcessor = new PlutonianNumberProcessor(@"..\..\Data\numberStones.txt");
             numberProcessor.HandleBlinks(25);
-            Console.WriteLine($"Stones after blinking {numberProcessor.StoneCount}");
+            Console.WriteLine($"SOLUTION pt 1 = Stones after blinking {numberProcessor.StoneCount}");
         }
 
         private static void Day10()
