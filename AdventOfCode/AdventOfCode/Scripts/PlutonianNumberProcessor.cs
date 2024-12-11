@@ -125,7 +125,7 @@ namespace AdventOfCode
 
             foreach (var number in _lastBlinkedStones)
             {
-                result += (ulong)number.Value;
+                result += number.Value;
             }
             
             return result;
@@ -140,28 +140,14 @@ namespace AdventOfCode
             }
             
             Console.WriteLine("Initial Arrangement:");
-            //Console.WriteLine(NumbersListToString() + "\n");
             Console.WriteLine($"Stones = {StoneCount}");
             
             for (var i = 0; i < blinkCount; i++)
             {
                 _lastBlinkedStones = ProcessRulesForStones(_lastBlinkedStones);
                 Console.WriteLine($"After {i+1} blink(s):");
-                //Console.WriteLine(NumbersListToString() + "\n");
                 Console.WriteLine($"Stones = {StoneCount}");
             }
-        }
-
-        private string NumbersListToString()
-        {
-            var result = string.Empty;
-
-            foreach (var lastBlinkedStone in _lastBlinkedStones)
-            {
-                result += lastBlinkedStone + " ";
-            }
-            
-            return result;
         }
 
         private Dictionary<ulong,ulong> ProcessRulesForStones(Dictionary<ulong,ulong> lastBlinkedStones)
