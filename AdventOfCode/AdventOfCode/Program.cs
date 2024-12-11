@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 11: Plutonian Pebbles");
+            var numberProcessor = new PlutonianNumberProcessor(@"..\..\Data\numberStones.txt");
+            numberProcessor.HandleBlinks(25);
+            Console.WriteLine($"Stones after blinking {numberProcessor.StoneCount}");
+        }
+
+        private static void Day10()
+        {
             Console.WriteLine("Day 10: Hoof It");
             var trailFinder = new TrailFinder(@"..\..\Data\trailMap.txt");
             trailFinder.MapTrailheads();

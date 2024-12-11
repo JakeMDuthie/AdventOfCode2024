@@ -52,6 +52,7 @@
         <Compile Include="Scripts\MultiplierParser.cs" />
         <Compile Include="Scripts\OperatorCalibrator.cs" />
         <Compile Include="Scripts\PageOrderer.cs" />
+        <Compile Include="Scripts\PlutonianNumberProcessor.cs" />
         <Compile Include="Scripts\ReactorAnalyser.cs"/>
         <Compile Include="Scripts\ReactorReport.cs"/>
         <Compile Include="Scripts\TrailFinder.cs" />
