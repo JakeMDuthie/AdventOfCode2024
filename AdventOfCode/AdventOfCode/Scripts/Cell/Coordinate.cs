@@ -4,12 +4,24 @@ namespace AdventOfCode
 {
     public static class CoordinateUtils
     {
-        public static readonly List<Coordinate> Directions = new List<Coordinate>
+        public static readonly List<Coordinate> CardinalDirections = new List<Coordinate>
         {
             new Coordinate(0, -1),
             new Coordinate(1, 0),
             new Coordinate(0, 1),
             new Coordinate(-1, 0)
+        };
+        
+        public static readonly List<Coordinate> Directions = new List<Coordinate>
+        {
+            new Coordinate(0, -1), // top
+            new Coordinate(1, -1), // top right
+            new Coordinate(1, 0), // right
+            new Coordinate(1, 1), // bottom right
+            new Coordinate(0, 1), // bottom
+            new Coordinate(-1, 1), // bottom left
+            new Coordinate(-1, 0), // left
+            new Coordinate(-1, -1) // top left
         };
     }
     
@@ -32,6 +44,11 @@ namespace AdventOfCode
         public override int GetHashCode()
         {
             return X * 173 + Y;
+        }
+
+        public override string ToString()
+        {
+            return $"({X}, {Y})";
         }
 
         public Coordinate GetReflection(Coordinate other)

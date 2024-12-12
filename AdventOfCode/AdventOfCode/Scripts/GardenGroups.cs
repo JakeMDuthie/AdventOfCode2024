@@ -46,6 +46,75 @@ namespace AdventOfCode
             {
                 RegionMap.AddCell(plantCell.Coordinate, plantCell);
             }
+
+            public uint GetFenceCostForRegionBasedOnSides()
+            {
+                // for a 2d shape, corners = sides - let's take that fact to simplify the solution
+                double corners = 0;
+
+                if (RegionMap.Values.Count == 1 ||
+                    RegionMap.Values.Count == 2)
+                {
+                    corners = 4;
+                }
+                else
+                {
+                    // figure out sides from corners
+                    foreach (var cellBeingChecked in RegionMap.Values)
+                    {
+                        var cornersForThisCell = 0d;
+                        // check top right corner
+                        cornersForThisCell += GetCornerValue(cellBeingChecked, 0, 2);
+                        
+                        // check bottom right corner
+                        cornersForThisCell +=  GetCornerValue(cellBeingChecked, 2, 4);
+                        
+                        // check bottom left corner
+                        cornersForThisCell +=  GetCornerValue(cellBeingChecked, 4, 6);
+                        
+                        // check top left corner
+                        cornersForThisCell +=  GetCornerValue(cellBeingChecked, 6, 8);
+                        
+                        //Console.WriteLine($"Checking coord = {cellBeingChecked.Coordinate} and added {cornersForThisCell} corners");
+                        
+                        corners += cornersForThisCell;
+                    }
+                }
+                
+                var cornersUint = (uint)Math.Ceiling(corners);
+                Console.WriteLine($"Region {Label} has {cornersUint} corners and {RegionMap.Values.Count} cells. => {RegionMap.Values.Count} * {cornersUint}.");
+                return (uint)RegionMap.Values.Count * cornersUint;
+            }
+
+            private double GetCornerValue(PlantCell cellBeingChecked, int startIndex, int endIndex)
+            {
+                var neighbours = 0;
+                for (var i = startIndex; i <= endIndex; i++)
+                {
+                    var direction = CoordinateUtils.Directions[i % CoordinateUtils.Directions.Count];
+                    var coordinate = cellBeingChecked.Coordinate + direction;
+
+                    if (RegionMap.TryGetCellAtCoordinate(coordinate, out _))
+                    {
+                        neighbours++;
+                    }
+                }
+
+                if (neighbours == 0)
+                {
+                    // convex corner
+                    return 1;
+                }
+
+                if (neighbours == 2)
+                {
+                    // concave corner
+                    // it will be counted three times, so add it as three third corners
+                    return 1d/3d;
+                }
+
+                return 0d;
+            }
         }
         
         private readonly CellMap<PlantCell> _map = new CellMap<PlantCell>();
@@ -91,7 +160,7 @@ namespace AdventOfCode
             {
                 var fenceCostForRegion = plantRegion.GetFenceCostForRegion();
                 result += fenceCostForRegion;
-                Console.WriteLine($"Region(s) of {plantRegion.Label} with price = {fenceCostForRegion}");
+                Console.WriteLine($"Region of {plantRegion.Label} with price = {fenceCostForRegion}");
             }
 
             return result;
@@ -99,7 +168,16 @@ namespace AdventOfCode
 
         public uint GetFenceCostBasedOnSides()
         {
-            throw new NotImplementedException();
+            uint result = 0;
+
+            foreach (var plantRegion in _regions)
+            {
+                var fenceCostForRegion = plantRegion.GetFenceCostForRegionBasedOnSides();
+                result += fenceCostForRegion;
+                Console.WriteLine($"Region of {plantRegion.Label} with price = {fenceCostForRegion}");
+            }
+
+            return result;
         }
 
         public void CalculateRegionsAndExposedEdges()
@@ -127,7 +205,7 @@ namespace AdventOfCode
 
         private void AddNeighboursToRegion(PlantCell plantCell, PlantRegion newRegion)
         {
-            foreach (var direction in CoordinateUtils.Directions)
+            foreach (var direction in CoordinateUtils.CardinalDirections)
             {
                 var coordinate = plantCell.Coordinate + direction;
 
@@ -148,7 +226,7 @@ namespace AdventOfCode
         {
             foreach (var plantCell in _map.Values)
             {
-                foreach (var direction in CoordinateUtils.Directions)
+                foreach (var direction in CoordinateUtils.CardinalDirections)
                 {
                     var coordinate = plantCell.Coordinate + direction;
 
