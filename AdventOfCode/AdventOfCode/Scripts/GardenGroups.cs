@@ -75,13 +75,14 @@ namespace AdventOfCode
                         // check top left corner
                         cornersForThisCell +=  GetCornerValue(cellBeingChecked, 6, 8);
                         
-                        //Console.WriteLine($"Checking coord = {cellBeingChecked.Coordinate} and added {cornersForThisCell} corners");
+                        Console.WriteLine($"Checking coord = {cellBeingChecked.Coordinate} and added {cornersForThisCell} corners");
                         
                         corners += cornersForThisCell;
+                        Console.WriteLine($"{corners} => {(uint)Math.Round(corners)}");
                     }
                 }
                 
-                var cornersUint = (uint)Math.Ceiling(corners);
+                var cornersUint = (uint)Math.Round(corners);
                 Console.WriteLine($"Region {Label} has {cornersUint} corners and {RegionMap.Values.Count} cells. => {RegionMap.Values.Count} * {cornersUint}.");
                 return (uint)RegionMap.Values.Count * cornersUint;
             }
@@ -89,6 +90,7 @@ namespace AdventOfCode
             private double GetCornerValue(PlantCell cellBeingChecked, int startIndex, int endIndex)
             {
                 var neighbours = 0;
+                var diagonalNeighbour = false;
                 for (var i = startIndex; i <= endIndex; i++)
                 {
                     var direction = CoordinateUtils.Directions[i % CoordinateUtils.Directions.Count];
@@ -97,6 +99,11 @@ namespace AdventOfCode
                     if (RegionMap.TryGetCellAtCoordinate(coordinate, out _))
                     {
                         neighbours++;
+
+                        if (i == startIndex + 1)
+                        {
+                            diagonalNeighbour = true;
+                        }
                     }
                 }
 
@@ -111,6 +118,12 @@ namespace AdventOfCode
                     // concave corner
                     // it will be counted three times, so add it as three third corners
                     return 1d/3d;
+                }
+
+                if (neighbours == 1 && diagonalNeighbour)
+                {
+                    // edge case for weird shapes where a diagonal isn't technically a neighbour
+                    return 1;
                 }
 
                 return 0d;
