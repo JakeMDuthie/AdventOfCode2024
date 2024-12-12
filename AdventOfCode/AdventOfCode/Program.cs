@@ -6,6 +6,15 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 12: Garden Groups");
+            var gardenGroups = new GardenGroups(@"..\..\Data\gardenGroups.txt");
+            gardenGroups.CalculateRegionsAndExposedEdges();
+            Console.WriteLine($"SOLUTION pt 1 = {gardenGroups.GetFenceCost()}");
+            Console.WriteLine($"SOLUTION pt 2 = {gardenGroups.GetFenceCostBasedOnSides()}");
+        }
+
+        private static void Day11()
+        {
             Console.WriteLine("Day 11: Plutonian Pebbles");
             var numberProcessor = new PlutonianNumberProcessor(@"..\..\Data\numberStones.txt");
             numberProcessor.HandleBlinks(25);

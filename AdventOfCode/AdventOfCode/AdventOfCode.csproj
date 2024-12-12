@@ -47,6 +47,7 @@
         <Compile Include="Scripts\Cell\Coordinate.cs" />
         <Compile Include="Scripts\Cell\ICell.cs" />
         <Compile Include="Scripts\DiskDefragmenter.cs" />
+        <Compile Include="Scripts\GardenGroups.cs" />
         <Compile Include="Scripts\GuardMap.cs" />
         <Compile Include="Scripts\IdAnalyser.cs"/>
         <Compile Include="Scripts\MultiplierParser.cs" />

@@ -1,5 +1,18 @@
+using System.Collections.Generic;
+
 namespace AdventOfCode
 {
+    public static class CoordinateUtils
+    {
+        public static readonly List<Coordinate> Directions = new List<Coordinate>
+        {
+            new Coordinate(0, -1),
+            new Coordinate(1, 0),
+            new Coordinate(0, 1),
+            new Coordinate(-1, 0)
+        };
+    }
+    
     public class Coordinate
     {
         public readonly int X;
@@ -18,7 +31,7 @@ namespace AdventOfCode
 
         public override int GetHashCode()
         {
-            return X * 131 + Y;
+            return X * 173 + Y;
         }
 
         public Coordinate GetReflection(Coordinate other)
