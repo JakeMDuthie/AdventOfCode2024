@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -92,13 +91,7 @@ namespace AdventOfCode
 
         public bool ProcessWalk()
         {
-            var directions = new List<Coordinate>
-            {
-                new Coordinate(0, -1),
-                new Coordinate(1, 0),
-                new Coordinate(0, 1),
-                new Coordinate(-1, 0)
-            };
+            var directions = CoordinateUtils.Directions;
             var directionIndex = 0;
             var direction = directions[directionIndex];
             var guardPosition = new Coordinate(_guardPositionStart.X, _guardPositionStart.Y);

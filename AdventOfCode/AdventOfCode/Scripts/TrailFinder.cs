@@ -36,19 +36,12 @@ namespace AdventOfCode
             {
                 var cells = new HashSet<TrailCell> { StartCell };
                 var nextCells = new HashSet<TrailCell>();
-                var directions = new List<Coordinate>
-                {
-                    new Coordinate(0, -1),
-                    new Coordinate(1, 0),
-                    new Coordinate(0, 1),
-                    new Coordinate(-1, 0)
-                };
 
                 while (cells.Count > 0)
                 {
                     foreach (var trailCell in cells)
                     {
-                        foreach (var direction in directions)
+                        foreach (var direction in CoordinateUtils.Directions)
                         {
                             if (!map.TryGetCellAtCoordinate(trailCell.Coordinate + direction, out var nextCell) ||
                                 nextCell.Height != trailCell.Height + 1)
@@ -79,19 +72,12 @@ namespace AdventOfCode
             {
                 var cells = new List<TrailCell> { StartCell };
                 var nextCells = new List<TrailCell>();
-                var directions = new List<Coordinate>
-                {
-                    new Coordinate(0, -1),
-                    new Coordinate(1, 0),
-                    new Coordinate(0, 1),
-                    new Coordinate(-1, 0)
-                };
 
                 while (cells.Count > 0)
                 {
                     foreach (var trailCell in cells)
                     {
-                        foreach (var direction in directions)
+                        foreach (var direction in CoordinateUtils.Directions)
                         {
                             if (!map.TryGetCellAtCoordinate(trailCell.Coordinate + direction, out var nextCell) ||
                                 nextCell.Height != trailCell.Height + 1)
