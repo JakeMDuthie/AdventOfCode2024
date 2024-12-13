@@ -65,5 +65,10 @@ namespace AdventOfCode
         {
             return new Coordinate(c1.X - c2.X, c1.Y - c2.Y);
         }
+        
+        public static Coordinate operator *(Coordinate c1, int coeff)
+        {
+            return new Coordinate(c1.X * coeff, c1.Y * coeff);
+        }
     }
 }

@@ -6,6 +6,13 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 13: Claw Contraption");
+            var clawContraption = new ClawContraption(@"..\..\Data\clawContraption.txt");
+            Console.WriteLine($"SOLUTION pt 1 = {clawContraption.GetMinimumTokensForAllPossiblePrizes()}");
+        }
+
+        private static void Day12()
+        {
             Console.WriteLine("Day 12: Garden Groups");
             var gardenGroups = new GardenGroups(@"..\..\Data\gardenGroups.txt");
             gardenGroups.CalculateRegionsAndExposedEdges();
