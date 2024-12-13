@@ -19,52 +19,47 @@ namespace AdventOfCode
 
         public void AmplifyPrizeCoordinate(long coeff)
         {
-            _prizeCoordinate *= coeff;
+            _prizeCoordinate += new LongCoordinate(coeff, coeff);
         }
 
         public long GetMinimumTokensToGetPrize()
         {
-            /*if (!IsPossible())
+            var bVal = B_Value();
+            if (bVal > 0)
             {
-                return 0;
-            }*/
-
-            var a = -1;
-            var smallestCombo = long.MaxValue;
-
-            while (_prizeCoordinate.X > _buttonA.X * a &&
-                   _prizeCoordinate.Y > _buttonA.Y * a)
-            {
-                a++;
-                var b = -1;
-                while (_prizeCoordinate.X > _buttonB.X * b &&
-                       _prizeCoordinate.Y > _buttonB.Y * b)
+                var aVal = A_Value(bVal);
+                if (aVal > 0)
                 {
-                    b++;
-                    if (((_buttonA * a) + (_buttonB * b)).Equals(_prizeCoordinate))
-                    {
-                        var combo = (a * 3) + b;
-                        if (combo < smallestCombo)
-                        {
-                            smallestCombo = combo;
-                        }
-                    }
+                    return (aVal*3) + bVal;
                 }
             }
-
-            return smallestCombo < long.MaxValue ? smallestCombo : 0;
+            
+            return 0;
         }
 
-        private bool IsPossible()
+        private long B_Value()
         {
-            // if either axis requires more than 100 button presses for both buttons, then this isn't possible
-            if (_prizeCoordinate.X / (_buttonA.X + _buttonB.X) > 100 && 
-                _prizeCoordinate.Y / (_buttonA.Y + _buttonB.Y) > 100)
+            if (((_buttonA.X * _prizeCoordinate.Y) - (_buttonA.Y * _prizeCoordinate.X)) %
+                ((_buttonA.X * _buttonB.Y) - (_buttonA.Y * _buttonB.X)) != 0)
             {
-                return false;
+                return -1;
             }
             
-            return true;
+            return ((_buttonA.X*_prizeCoordinate.Y)-(_buttonA.Y*_prizeCoordinate.X))
+                   /
+                   ((_buttonA.X*_buttonB.Y)-(_buttonA.Y*_buttonB.X));
+        }
+
+        private long A_Value(long b)
+        {
+            if (((_prizeCoordinate.X) - (_buttonB.X * b)) %
+                (_buttonA.X) != 0)
+            {
+                return -1;
+            }
+
+            return ((_prizeCoordinate.X) - (_buttonB.X * b)) /
+                   (_buttonA.X);
         }
     }
     

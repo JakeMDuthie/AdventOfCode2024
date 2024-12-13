@@ -7,10 +7,10 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 13: Claw Contraption");
-            var clawContraption = new ClawContraption(@"..\..\Data\clawContraptionSmall.txt");
+            var clawContraption = new ClawContraption(@"..\..\Data\clawContraption.txt");
             Console.WriteLine($"SOLUTION pt 1 = {clawContraption.GetMinimumTokensForAllPossiblePrizes()}");
             clawContraption.AmplifyAllPrizeCoords(10000000000000);
-            //Console.WriteLine($"SOLUTION pt 2 = {clawContraption.GetMinimumTokensForAllPossiblePrizes()}");
+            Console.WriteLine($"SOLUTION pt 2 = {clawContraption.GetMinimumTokensForAllPossiblePrizes()}");
         }
 
         private static void Day12()
