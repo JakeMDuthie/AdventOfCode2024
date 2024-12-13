@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace AdventOfCode
@@ -69,6 +70,53 @@ namespace AdventOfCode
         public static Coordinate operator *(Coordinate c1, int coeff)
         {
             return new Coordinate(c1.X * coeff, c1.Y * coeff);
+        }
+    }
+    
+    public class LongCoordinate
+    {
+        public readonly long X;
+        public readonly long Y;
+
+        public LongCoordinate(long x, long y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public bool Equals(LongCoordinate other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)X * 173 + (int)Y;
+        }
+
+        public override string ToString()
+        {
+            return $"({X}, {Y})";
+        }
+
+        public LongCoordinate GetReflection(LongCoordinate other)
+        {
+            return new LongCoordinate(this.X + (this.X - other.X), this.Y + (this.Y - other.Y));
+        }
+        
+        public static LongCoordinate operator +(LongCoordinate c1, LongCoordinate c2)
+        {
+            return new LongCoordinate(c1.X + c2.X, c1.Y + c2.Y);
+        }
+        
+        public static LongCoordinate operator -(LongCoordinate c1, LongCoordinate c2)
+        {
+            return new LongCoordinate(c1.X - c2.X, c1.Y - c2.Y);
+        }
+        
+        public static LongCoordinate operator *(LongCoordinate c1, long coeff)
+        {
+            return new LongCoordinate(c1.X * coeff, c1.Y * coeff);
         }
     }
 }

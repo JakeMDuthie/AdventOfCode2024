@@ -6,47 +6,53 @@ namespace AdventOfCode
 {
     public class ClawMachine
     {
-        private readonly Coordinate _prizeCoordinate;
-        private readonly Coordinate _buttonA;
-        private readonly Coordinate _buttonB;
+        private LongCoordinate _prizeCoordinate;
+        private readonly LongCoordinate _buttonA;
+        private readonly LongCoordinate _buttonB;
 
-        public ClawMachine(Coordinate buttonA, Coordinate buttonB, Coordinate prizeCoordinate)
+        public ClawMachine(LongCoordinate buttonA, LongCoordinate buttonB, LongCoordinate prizeCoordinate)
         {
             _prizeCoordinate = prizeCoordinate;
             _buttonA = buttonA;
             _buttonB = buttonB;
         }
 
-        public int GetMinimumTokensToGetPrize()
+        public void AmplifyPrizeCoordinate(long coeff)
         {
-            if (!IsPossible())
+            _prizeCoordinate *= coeff;
+        }
+
+        public long GetMinimumTokensToGetPrize()
+        {
+            /*if (!IsPossible())
             {
                 return 0;
-            }
+            }*/
 
-            var possibleCombos = new List<int>();
             var a = -1;
-            var b = -1;
+            var smallestCombo = long.MaxValue;
 
             while (_prizeCoordinate.X > _buttonA.X * a &&
                    _prizeCoordinate.Y > _buttonA.Y * a)
             {
                 a++;
-                b = -1;
+                var b = -1;
                 while (_prizeCoordinate.X > _buttonB.X * b &&
                        _prizeCoordinate.Y > _buttonB.Y * b)
                 {
                     b++;
                     if (((_buttonA * a) + (_buttonB * b)).Equals(_prizeCoordinate))
                     {
-                        possibleCombos.Add((a*3) + b);
+                        var combo = (a * 3) + b;
+                        if (combo < smallestCombo)
+                        {
+                            smallestCombo = combo;
+                        }
                     }
                 }
             }
-            
-            possibleCombos.Sort();
-            
-            return possibleCombos.Count > 0 ? possibleCombos[0] : 0;
+
+            return smallestCombo < long.MaxValue ? smallestCombo : 0;
         }
 
         private bool IsPossible()
@@ -72,8 +78,8 @@ namespace AdventOfCode
                 Path.Combine(Environment.CurrentDirectory, filename));
             
             var line = sr.ReadLine();
-            Coordinate buttonA = null;
-            Coordinate buttonB = null;
+            LongCoordinate buttonA = null;
+            LongCoordinate buttonB = null;
 
             while (line != null)
             {
@@ -100,7 +106,7 @@ namespace AdventOfCode
             Console.WriteLine($"Claw Machine: {_clawMachines.Count}");
         }
 
-        private Coordinate StringToCoordinate(string line)
+        private LongCoordinate StringToCoordinate(string line)
         {
             line = line.Replace(" ", "");
             line = line.Replace("+", "");
@@ -110,19 +116,30 @@ namespace AdventOfCode
             
             var parts = line.Split(',');
             
-            return new Coordinate(int.Parse(parts[0]), int.Parse(parts[1]));
+            return new LongCoordinate(long.Parse(parts[0]), long.Parse(parts[1]));
         }
 
-        public int GetMinimumTokensForAllPossiblePrizes()
+        public long GetMinimumTokensForAllPossiblePrizes()
         {
-            var result = 0;
+            long result = 0;
 
+            Console.WriteLine("GetMinimumTokensForAllPossiblePrizes:");
+            var index = 0;
             foreach (var clawMachine in _clawMachines)
             {
                 result += clawMachine.GetMinimumTokensToGetPrize();
+                Console.WriteLine($"{++index}/{_clawMachines.Count}");
             }
             
             return result;
+        }
+
+        public void AmplifyAllPrizeCoords(long coeff)
+        {
+            foreach (var clawMachine in _clawMachines)
+            {
+                clawMachine.AmplifyPrizeCoordinate(coeff);
+            }
         }
     }
 }
