@@ -6,6 +6,13 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 14: Restroom Redoubt");
+            var robotHandler = new RobotHandler(@"..\..\Data\restroomRedoubt.txt", 103, 101);
+            Console.WriteLine($"SOLUTION pt 1 = {robotHandler.GetSafetyScore(10403)}");
+        }
+
+        private static void Day13()
+        {
             Console.WriteLine("Day 13: Claw Contraption");
             var clawContraption = new ClawContraption(@"..\..\Data\clawContraption.txt");
             Console.WriteLine($"SOLUTION pt 1 = {clawContraption.GetMinimumTokensForAllPossiblePrizes()}");

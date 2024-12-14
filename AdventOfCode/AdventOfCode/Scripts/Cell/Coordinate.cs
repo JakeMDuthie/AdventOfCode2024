@@ -27,8 +27,8 @@ namespace AdventOfCode
     
     public class Coordinate
     {
-        public readonly int X;
-        public readonly int Y;
+        public int X;
+        public int Y;
 
         public Coordinate(int x, int y)
         {
