@@ -99,10 +99,6 @@ namespace AdventOfCode
 
                             toMove.Add(bigBoxCell.OtherHalf);
                         }
-                        else
-                        {
-                            nextFront.Add(coordToCheck);
-                        }
                     }
                     front.Clear();
                     front.AddRange(nextFront);
@@ -111,13 +107,13 @@ namespace AdventOfCode
 
                 if (blockerFound)
                 {
-                    PrintMap(index, directionIndex);
+                    //PrintMap(index, directionIndex);
                     continue;
                 }
                 
                 MoveCells(toMove, direction);
                 
-                PrintMap(index, directionIndex);
+                //PrintMap(index, directionIndex);
             }
         }
 

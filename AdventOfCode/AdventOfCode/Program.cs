@@ -10,7 +10,7 @@ namespace AdventOfCode
             var warehouseNavigator = new WarehouseNavigator(@"..\..\Data\warehouseWoesSmall.txt");
             warehouseNavigator.ProcessRobotMoves();
             Console.WriteLine($"SOLUTION pt 1 = {warehouseNavigator.GetBoxCoordinateSum()}");
-            var largeWarehouseNavigator = new LargeWarehouseNavigator(@"..\..\Data\warehouseWoesMedium.txt");
+            var largeWarehouseNavigator = new LargeWarehouseNavigator(@"..\..\Data\warehouseWoes.txt");
             largeWarehouseNavigator.ProcessRobotMoves();
             Console.WriteLine($"\nSOLUTION pt 2 = {largeWarehouseNavigator.GetBoxCoordinateSum()}");
         }
