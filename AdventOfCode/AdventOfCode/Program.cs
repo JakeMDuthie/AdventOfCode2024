@@ -7,9 +7,12 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 15: Warehouse Woes");
-            var warehouseNavigator = new WarehouseNavigator(@"..\..\Data\warehouseWoes.txt");
+            var warehouseNavigator = new WarehouseNavigator(@"..\..\Data\warehouseWoesSmall.txt");
             warehouseNavigator.ProcessRobotMoves();
             Console.WriteLine($"SOLUTION pt 1 = {warehouseNavigator.GetBoxCoordinateSum()}");
+            var largeWarehouseNavigator = new LargeWarehouseNavigator(@"..\..\Data\warehouseWoesMedium.txt");
+            largeWarehouseNavigator.ProcessRobotMoves();
+            Console.WriteLine($"\nSOLUTION pt 2 = {largeWarehouseNavigator.GetBoxCoordinateSum()}");
         }
 
         private static void Day14()

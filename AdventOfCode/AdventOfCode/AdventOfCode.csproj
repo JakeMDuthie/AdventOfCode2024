@@ -51,6 +51,7 @@
         <Compile Include="Scripts\GardenGroups.cs" />
         <Compile Include="Scripts\GuardMap.cs" />
         <Compile Include="Scripts\IdAnalyser.cs"/>
+        <Compile Include="Scripts\LargeWarehouseNavigator.cs" />
         <Compile Include="Scripts\MultiplierParser.cs" />
         <Compile Include="Scripts\OperatorCalibrator.cs" />
         <Compile Include="Scripts\PageOrderer.cs" />

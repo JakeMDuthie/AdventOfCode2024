@@ -6,13 +6,13 @@ namespace AdventOfCode
 {
     public class WarehouseNavigator
     {
-        private interface IWarehouseCell : ICell
+        protected interface IWarehouseCell : ICell
         {
             Coordinate Coordinate { get; set; }
             string ToString();
         }
 
-        private class BlockerCell: IWarehouseCell
+        protected class BlockerCell: IWarehouseCell
         {
             public Coordinate Coordinate { get; set; }
             public override string ToString() => "#";
@@ -39,18 +39,7 @@ namespace AdventOfCode
             }
         }
 
-        private class EmptyCell : IWarehouseCell
-        {
-            public Coordinate Coordinate { get; set; }
-            public override string ToString() => ".";
-
-            public EmptyCell(Coordinate coordinate)
-            {
-                Coordinate = coordinate;
-            }
-        }
-
-        private class Robot : IWarehouseCell
+        protected class Robot : IWarehouseCell
         {
             public Coordinate Coordinate { get; set; }
             public override string ToString() => "@";
@@ -61,10 +50,13 @@ namespace AdventOfCode
             }
         }
         
-        private readonly CellMap<IWarehouseCell> _map = new CellMap<IWarehouseCell>();
-        private readonly List<int> _directionIndices = new List<int>();
+        protected readonly CellMap<IWarehouseCell> Map = new CellMap<IWarehouseCell>();
+        protected readonly List<int> DirectionIndices = new List<int>();
+
+        protected int Width;
+        private readonly int _height;
         
-        private Robot _robot;
+        protected Robot WarehouseRobot;
         
         public WarehouseNavigator(string filename)
         {
@@ -80,7 +72,9 @@ namespace AdventOfCode
                 if (line.Contains("#"))
                 {
                     AddLineToMap(line, y);
+                    Width = line.Length;
                     y++;
+                    _height = y;
                 }
                 else if (line.Contains("<") || line.Contains(">") || line.Contains("^") || line.Contains("v"))
                 {
@@ -91,51 +85,79 @@ namespace AdventOfCode
             }
         }
 
-        public void ProcessRobotMoves()
+        public virtual void ProcessRobotMoves()
         {
-            var toMove = new List<IWarehouseCell>();
-            foreach (var directionIndex in _directionIndices)
+            var toMove = new HashSet<IWarehouseCell>();
+            var index = 0;
+            foreach (var directionIndex in DirectionIndices)
             {
+                index++;
                 var direction = CoordinateUtils.CardinalDirections[directionIndex];
                 toMove.Clear();
-                toMove.Add(_robot);
-                IWarehouseCell cell = _robot;
+                toMove.Add(WarehouseRobot);
+                IWarehouseCell cell = WarehouseRobot;
 
                 do
                 {
                     var coordToCheck = cell.Coordinate + direction;
-                    _map.TryGetCellAtCoordinate(coordToCheck, out cell);
-                    toMove.Add(cell);
-                } while (cell is BoxCell);
+                    if (Map.TryGetCellAtCoordinate(coordToCheck, out cell))
+                    {
+                        toMove.Add(cell);
+                    }
+                } while (cell != null && cell is BoxCell);
 
-                if (!(cell is EmptyCell emptyCell))
+                if (cell != null)
                 {
+                    PrintMap(index, directionIndex);
                     continue;
                 }
                 
-                emptyCell.Coordinate.X = _robot.Coordinate.X;
-                emptyCell.Coordinate.Y = _robot.Coordinate.Y;
-                
-                for (var i = 0; i < toMove.Count-1; i++)
-                {
-                    var cellMoving = toMove[i];
-                    cellMoving.Coordinate += direction;
-                }
-                
-                foreach (var warehouseCell in toMove)
-                {
-                    _map.ReplaceCell(warehouseCell.Coordinate, warehouseCell);
-                }
-                
-                //PrintMap();
+                MoveCells(toMove, direction);
+
+                PrintMap(index, directionIndex);
             }
         }
 
-        public int GetBoxCoordinateSum()
+        private string GetDirectionCharacterForIndex(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return "^";
+                case 1:
+                    return ">";
+                case 2:
+                    return "v";
+                default:
+                    return "<";
+            }
+        }
+
+        protected void MoveCells(HashSet<IWarehouseCell> toMove, Coordinate direction)
+        {
+            Map.RemoveCell(WarehouseRobot.Coordinate);
+                
+            foreach (var warehouseCell in toMove)
+            {
+                Map.RemoveCell(warehouseCell.Coordinate);
+            }
+                
+            foreach (var cellMoving in toMove)
+            {
+                cellMoving.Coordinate += direction;
+            }
+                
+            foreach (var warehouseCell in toMove)
+            {
+                Map.ReplaceCell(warehouseCell.Coordinate, warehouseCell);
+            }
+        }
+
+        public virtual int GetBoxCoordinateSum()
         {
             var result = 0;
 
-            foreach (var mapValue in _map.Values)
+            foreach (var mapValue in Map.Values)
             {
                 if (!(mapValue is BoxCell boxCell))
                 {
@@ -161,29 +183,29 @@ namespace AdventOfCode
                 switch (symbol)
                 {
                     case '^':
-                        _directionIndices.Add(0);
+                        DirectionIndices.Add(0);
                         break;
                     case '>':
-                        _directionIndices.Add(1);
+                        DirectionIndices.Add(1);
                         break;
                     case 'v':
-                        _directionIndices.Add(2);
+                        DirectionIndices.Add(2);
                         break;
                     case '<':
-                        _directionIndices.Add(3);
+                        DirectionIndices.Add(3);
                         break;
                 }
             }
         }
 
-        private void AddLineToMap(string line, int yPos)
+        protected virtual void AddLineToMap(string line, int yPos)
         {
             var cells = line.ToCharArray(); 
             for (var xPos = 0; xPos < cells.Length; xPos++)
             {
                 var symbol = cells[xPos];
 
-                if (char.IsControl(symbol))
+                if (char.IsControl(symbol) || symbol == '.')
                 {
                     continue;
                 }
@@ -193,32 +215,36 @@ namespace AdventOfCode
 
                 if (cell is Robot robot)
                 {
-                    _robot = robot;
+                    WarehouseRobot = robot;
                 }
                 
-                _map.AddCell(coordinate, cell);
+                Map.AddCell(coordinate, cell);
             }
         }
         
-        private void PrintMap()
+        protected void PrintMap(int index, int directionIndex)
         {
-            Console.WriteLine("\nMOVE:");
+            Console.WriteLine($"\nMOVE {index} {GetDirectionCharacterForIndex(directionIndex)}:");
             var str = string.Empty;
             var lastY = 0;
             var coord = new Coordinate(0, 0);
-            
-            foreach (var warehouseCell in _map.Values)
-            {
-                coord.X = warehouseCell.Coordinate.X;
-                coord.Y = warehouseCell.Coordinate.Y;
 
-                if (coord.Y != lastY)
+            for (var yPos = 0; yPos < _height; yPos++)
+            {
+                coord.Y = yPos;
+                for (var xPos = 0; xPos < Width; xPos++)
                 {
-                    str += "\n";
-                    lastY = coord.Y;
+                    coord.X = xPos;
+                    if (Map.TryGetCellAtCoordinate(coord, out var cell))
+                    {
+                        str += cell.ToString();
+                    }
+                    else
+                    {
+                        str += ".";
+                    }
                 }
-                
-                str += warehouseCell.ToString();
+                str += "\n";
             }
             
             Console.Write(str);
@@ -230,8 +256,6 @@ namespace AdventOfCode
             {
                 case '#':
                     return new BlockerCell(coordinate);
-                case '.':
-                    return new EmptyCell(coordinate);
                 case '@':
                     return new Robot(coordinate);
                 case 'O':

@@ -29,5 +29,10 @@ namespace AdventOfCode
                 AddCell(coordinate, cell);
             }
         }
+
+        public void RemoveCell(Coordinate coordinate)
+        {
+            _cells.Remove(coordinate.GetHashCode());
+        }
     }
 }
