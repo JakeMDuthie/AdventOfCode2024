@@ -6,6 +6,14 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 15: Warehouse Woes");
+            var warehouseNavigator = new WarehouseNavigator(@"..\..\Data\warehouseWoes.txt");
+            warehouseNavigator.ProcessRobotMoves();
+            Console.WriteLine($"SOLUTION pt 1 = {warehouseNavigator.GetBoxCoordinateSum()}");
+        }
+
+        private static void Day14()
+        {
             Console.WriteLine("Day 14: Restroom Redoubt");
             var robotHandler = new RobotHandler(@"..\..\Data\restroomRedoubt.txt", 103, 101);
             Console.WriteLine($"SOLUTION pt 1 = {robotHandler.GetSafetyScore(10403)}");

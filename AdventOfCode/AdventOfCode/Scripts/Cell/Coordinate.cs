@@ -6,10 +6,10 @@ namespace AdventOfCode
     {
         public static readonly List<Coordinate> CardinalDirections = new List<Coordinate>
         {
-            new Coordinate(0, -1),
-            new Coordinate(1, 0),
-            new Coordinate(0, 1),
-            new Coordinate(-1, 0)
+            new Coordinate(0, -1), // up
+            new Coordinate(1, 0), // right
+            new Coordinate(0, 1), // down
+            new Coordinate(-1, 0) // left
         };
         
         public static readonly List<Coordinate> Directions = new List<Coordinate>

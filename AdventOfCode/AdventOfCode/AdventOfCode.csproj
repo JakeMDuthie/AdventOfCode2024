@@ -40,6 +40,7 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="LargeWarehouseNavigator.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Scripts\AntennaMap.cs" />
@@ -60,6 +61,7 @@
         <Compile Include="Scripts\RobotHandler.cs" />
         <Compile Include="Scripts\TrailFinder.cs" />
         <Compile Include="Scripts\WordSearcher.cs" />
+        <Compile Include="WarehouseNavigator.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

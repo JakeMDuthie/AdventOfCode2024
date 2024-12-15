@@ -17,5 +17,17 @@ namespace AdventOfCode
         {
             _cells.Add(coordinate.GetHashCode(), cell);
         }
+
+        public void ReplaceCell(Coordinate coordinate, T cell)
+        {
+            if (_cells.ContainsKey(coordinate.GetHashCode()))
+            {
+                _cells[coordinate.GetHashCode()] = cell;
+            }
+            else
+            {
+                AddCell(coordinate, cell);
+            }
+        }
     }
 }
