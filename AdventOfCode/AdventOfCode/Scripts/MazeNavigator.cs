@@ -210,6 +210,7 @@ namespace AdventOfCode
                         bestRoute.AddNodeToPath(nextNode.Node);
                         bestRoute.Score = result;
                         _bestRoutes.Add(bestRoute);
+                        Console.WriteLine($"Best Route Found! Score: {result}, Route Count {_bestRoutes.Count}");
                         
                         continue;
                     }
@@ -225,6 +226,7 @@ namespace AdventOfCode
             }
             
             Console.WriteLine($"Best Route Score: {result}, Route Cout {_bestRoutes.Count}");
+            Console.WriteLine($"RESULT = Best Route Score: {result}, Route Count {_bestRoutes.Count}");
             return result;
         }
 
@@ -298,6 +300,9 @@ namespace AdventOfCode
         public int GetBestSeatsCount()
         {
             var uniqueSpotsOnBestRoutes = new HashSet<Coordinate>();
+            
+            Console.WriteLine($"\nBEFORE\n");
+            PrintMap(uniqueSpotsOnBestRoutes);
 
             foreach (var route in _bestRoutes)
             {
@@ -319,7 +324,40 @@ namespace AdventOfCode
                 }
             }
             
+            Console.WriteLine($"\nAFTER\n");
+            PrintMap(uniqueSpotsOnBestRoutes);
+            
             return uniqueSpotsOnBestRoutes.Count;
+        }
+        
+        private void PrintMap(HashSet<Coordinate> hashSet)
+        {
+            var str = string.Empty;
+            var lastY = 0;
+
+            foreach (var mazeMapValue in _mazeMap.Values)
+            {
+                if (lastY != mazeMapValue.Coordinate.Y)
+                {
+                    str += "\n";
+                    lastY = mazeMapValue.Coordinate.Y;
+                }
+
+                if (hashSet.Contains(mazeMapValue.Coordinate))
+                {
+                    str += "O";
+                }
+                else if (mazeMapValue is WallCell)
+                {
+                    str += "#";
+                }
+                else
+                {
+                    str += ".";
+                }
+            }
+            
+            Console.WriteLine(str);
         }
     }
 }
