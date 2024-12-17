@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AdventOfCode
@@ -31,8 +32,10 @@ namespace AdventOfCode
         }
         
         private readonly CellMap<IMazeCell> _mazeMap = new CellMap<IMazeCell>();
+        
         private Coordinate _startPoint;
         private Coordinate _endPoint;
+        private List<EmptyCell> _nodes = new List<EmptyCell>();
         
         public MazeNavigator(string filename)
         {
@@ -84,6 +87,58 @@ namespace AdventOfCode
                 
                 _mazeMap.AddCell(coordinate, new EmptyCell(coordinate));
             }
+        }
+
+        public int GetSmallestNavigationScore()
+        {
+            return -1;
+        }
+
+        public void BuildNodes()
+        {
+            _nodes.Clear();
+
+            foreach (var mazeCell in _mazeMap.Values)
+            {
+                if (!(mazeCell is EmptyCell emptyCell))
+                {
+                    continue;
+                }
+
+                var neighbourCells = new List<EmptyCell>();
+                foreach (var direction in CoordinateUtils.CardinalDirections)
+                {
+                    var coordToCheck = emptyCell.Coordinate + direction;
+                    if (_mazeMap.TryGetCellAtCoordinate(coordToCheck, out var cell) &&
+                        cell is EmptyCell emptyNeighbour)
+                    {
+                        neighbourCells.Add(emptyNeighbour);
+                    }
+                }
+
+                if (neighbourCells.Count < 2)
+                {
+                    continue;
+                }
+
+                if (neighbourCells.Count > 2)
+                {
+                    _nodes.Add(emptyCell);
+                    continue;
+                }
+
+                var firstCoordinate = neighbourCells[0].Coordinate;
+                var secondCoordinate = neighbourCells[1].Coordinate;
+                if (firstCoordinate.X == secondCoordinate.X ||
+                    firstCoordinate.Y == secondCoordinate.Y)
+                {
+                    continue;
+                }
+                
+                _nodes.Add(emptyCell);
+            }
+            
+            Console.WriteLine($"Map has {_nodes.Count} nodes");
         }
     }
 }

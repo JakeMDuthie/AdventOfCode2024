@@ -8,6 +8,8 @@ namespace AdventOfCode
         {
             Console.WriteLine("Day 16: Reindeer Maze");
             var mazeNavigator = new MazeNavigator(@"..\..\Data\reindeerMazeSmall.txt");
+            mazeNavigator.BuildNodes();
+            Console.WriteLine($"SOLUTION pt 1 = {mazeNavigator.GetSmallestNavigationScore()}");
         }
 
         private static void Day15()
