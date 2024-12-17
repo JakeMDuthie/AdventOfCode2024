@@ -30,12 +30,28 @@ namespace AdventOfCode
                 Coordinate = coordinate;
             }
         }
+
+        private class NodeCell : IMazeCell
+        {
+            public Coordinate Coordinate { get; set; }
+            public List<Coordinate> NeighbourCoordinates { get; } = new List<Coordinate>();
+
+            public NodeCell(Coordinate coordinate, List<EmptyCell> neighbourCells)
+            {
+                Coordinate = coordinate;
+
+                foreach (var neighbourCell in neighbourCells)
+                {
+                    NeighbourCoordinates.Add(neighbourCell.Coordinate);
+                }
+            }
+        }
         
         private readonly CellMap<IMazeCell> _mazeMap = new CellMap<IMazeCell>();
+        private readonly List<NodeCell> _nodes = new List<NodeCell>();
         
         private Coordinate _startPoint;
         private Coordinate _endPoint;
-        private List<EmptyCell> _nodes = new List<EmptyCell>();
         
         public MazeNavigator(string filename)
         {
@@ -116,26 +132,32 @@ namespace AdventOfCode
                     }
                 }
 
-                if (neighbourCells.Count < 2)
+                if (neighbourCells.Count < 2 &&
+                    !emptyCell.Coordinate.Equals(_startPoint)&&
+                    !emptyCell.Coordinate.Equals(_endPoint))
                 {
                     continue;
                 }
 
-                if (neighbourCells.Count > 2)
+                if (neighbourCells.Count == 2)
                 {
-                    _nodes.Add(emptyCell);
-                    continue;
+                    var firstCoordinate = neighbourCells[0].Coordinate;
+                    var secondCoordinate = neighbourCells[1].Coordinate;
+                    if (firstCoordinate.X == secondCoordinate.X ||
+                        firstCoordinate.Y == secondCoordinate.Y)
+                    {
+                        continue;
+                    }
                 }
 
-                var firstCoordinate = neighbourCells[0].Coordinate;
-                var secondCoordinate = neighbourCells[1].Coordinate;
-                if (firstCoordinate.X == secondCoordinate.X ||
-                    firstCoordinate.Y == secondCoordinate.Y)
-                {
-                    continue;
-                }
+                var nodeCell = new NodeCell(emptyCell.Coordinate, neighbourCells);
                 
-                _nodes.Add(emptyCell);
+                _nodes.Add(nodeCell);
+            }
+
+            foreach (var node in _nodes)
+            {
+                _mazeMap.ReplaceCell(node.Coordinate, node);
             }
             
             Console.WriteLine($"Map has {_nodes.Count} nodes");
