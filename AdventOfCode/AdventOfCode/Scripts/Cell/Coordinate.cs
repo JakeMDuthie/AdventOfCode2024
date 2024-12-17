@@ -55,6 +55,12 @@ namespace AdventOfCode
         {
             return new Coordinate(this.X + (this.X - other.X), this.Y + (this.Y - other.Y));
         }
+
+        public Coordinate Normalise()
+        {
+            var div = X * X + Y * Y;
+            return new Coordinate((X*X) / div, (Y*Y) / div);
+        }
         
         public static Coordinate operator +(Coordinate c1, Coordinate c2)
         {

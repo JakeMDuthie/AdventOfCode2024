@@ -1,11 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AdventOfCode
 {
     public class MazeNavigator
     {
+        private class Route
+        {
+            public int Score;
+            public NodeCell CurrentNode;
+            public List<NodeCell> Path = new List<NodeCell>();
+            public Coordinate ArrivalDirection;
+
+            public void AddNodeToPath(NodeCell node)
+            {
+                Path.Add(node);
+                CurrentNode = node;
+            }
+        }
+        
         private interface IMazeCell : ICell
         {
             Coordinate Coordinate { get; set; }
@@ -45,24 +60,26 @@ namespace AdventOfCode
                 }
             }
             public Coordinate Coordinate { get; set; }
-            private List<Coordinate> NeighbourDirections { get; }
-            public List<ConnectingNode> ConnectingNodes { get; }
+            public List<ConnectingNode> ConnectingNodes { get; } = new List<ConnectingNode>();
+            
+            private readonly List<Coordinate> _neighbourDirections;
             
 
             public NodeCell(Coordinate coordinate, List<EmptyCell> neighbourCells)
             {
                 Coordinate = coordinate;
 
-                NeighbourDirections = new List<Coordinate>();
+                _neighbourDirections = new List<Coordinate>();
                 foreach (var neighbourCell in neighbourCells)
                 {
-                    NeighbourDirections.Add(neighbourCell.Coordinate-coordinate);
+                    _neighbourDirections.Add(neighbourCell.Coordinate-coordinate);
                 }
             }
 
             public void FindConnectingNodes(CellMap<IMazeCell> map)
             {
-                foreach (var direction in NeighbourDirections)
+                ConnectingNodes.Clear();
+                foreach (var direction in _neighbourDirections)
                 {
                     var coordToCheck = Coordinate + direction;
                     var distance = 0;
@@ -140,7 +157,65 @@ namespace AdventOfCode
 
         public int GetSmallestNavigationScore()
         {
-            return -1;
+            var visitedNodes = new HashSet<NodeCell>();
+            var candidates = new List<Route>();
+            
+            var firstRoute = new Route();
+            firstRoute.Score = 0;
+            firstRoute.ArrivalDirection = CoordinateUtils.CardinalDirections[1]; // faces right to start, always
+            _mazeMap.TryGetCellAtCoordinate(_startPoint, out var cell);
+            firstRoute.AddNodeToPath((NodeCell)cell);
+            candidates.Add(firstRoute);
+
+            var found = false;
+            var result = 0;
+
+            while (!found)
+            {
+                candidates.Sort((x, y) => x.Score.CompareTo(y.Score));
+                var currentCandidate = candidates[0];
+                candidates.RemoveAt(0);
+                
+                foreach (var nextNode in currentCandidate.CurrentNode.ConnectingNodes)
+                {
+                    if (visitedNodes.Contains(nextNode.Node))
+                    {
+                        continue;
+                    }
+
+                    var scoreCostToConnect = GetScoreCostToConnect(currentCandidate.CurrentNode.Coordinate,
+                        nextNode.Node.Coordinate,
+                        currentCandidate.ArrivalDirection,
+                        out var nextDirection);
+                    var nextNodeScore = currentCandidate.Score + nextNode.Distance + scoreCostToConnect;
+                    
+                    if (nextNode.Node.Coordinate == _endPoint)
+                    {
+                        found = true;
+                        result = nextNodeScore;
+                        break;
+                    }
+                    
+                    var newCandidate = new Route();
+                    newCandidate.AddNodeToPath(nextNode.Node);
+                    newCandidate.Score = nextNodeScore;
+                    newCandidate.ArrivalDirection = nextDirection;
+                    candidates.Add(newCandidate);
+                }
+                
+                visitedNodes.Add(currentCandidate.CurrentNode);
+            }
+            
+            return result;
+        }
+
+        private int GetScoreCostToConnect(Coordinate source, Coordinate target, Coordinate currentDirection, out Coordinate nextDirection)
+        {
+            nextDirection = (target - source).Normalise();
+
+            return nextDirection.Equals(currentDirection) 
+                ? 0 // direction stays the same
+                : 1000; // means left/right turn of 90'
         }
 
         public void BuildNodes()
