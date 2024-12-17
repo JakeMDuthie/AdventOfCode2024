@@ -6,6 +6,12 @@ namespace AdventOfCode
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Day 16: Reindeer Maze");
+            var mazeNavigator = new MazeNavigator(@"..\..\Data\reindeerMazeSmall.txt");
+        }
+
+        private static void Day15()
+        {
             Console.WriteLine("Day 15: Warehouse Woes");
             var warehouseNavigator = new WarehouseNavigator(@"..\..\Data\warehouseWoesSmall.txt");
             warehouseNavigator.ProcessRobotMoves();
