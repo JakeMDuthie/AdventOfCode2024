@@ -11,13 +11,19 @@ namespace AdventOfCode
         {
             public int Score;
             public NodeCell CurrentNode;
-            public List<NodeCell> Path = new List<NodeCell>();
+            public List<NodeCell> Path;
             public Coordinate ArrivalDirection;
 
             public void AddNodeToPath(NodeCell node)
             {
                 Path.Add(node);
                 CurrentNode = node;
+            }
+
+            public Route(List<NodeCell> path)
+            {
+                Path = new List<NodeCell>();
+                Path.AddRange(path);
             }
         }
         
@@ -102,7 +108,8 @@ namespace AdventOfCode
         
         private Coordinate _startPoint;
         private Coordinate _endPoint;
-        
+        private List<Route> _bestRoutes;
+
         public MazeNavigator(string filename)
         {
             var sr = new StreamReader(
@@ -160,17 +167,19 @@ namespace AdventOfCode
             var visitedNodes = new HashSet<NodeCell>();
             var candidates = new List<Route>();
             
-            var firstRoute = new Route();
+            var firstRoute = new Route(new List<NodeCell>());
             firstRoute.Score = 0;
             firstRoute.ArrivalDirection = CoordinateUtils.CardinalDirections[1]; // faces right to start, always
             _mazeMap.TryGetCellAtCoordinate(_startPoint, out var cell);
             firstRoute.AddNodeToPath((NodeCell)cell);
             candidates.Add(firstRoute);
+            
+            _bestRoutes = new List<Route>();
 
             var found = false;
-            var result = 0;
+            var result = -1;
 
-            while (!found)
+            while (candidates.Count > 0)
             {
                 candidates.Sort((x, y) => x.Score.CompareTo(y.Score));
                 var currentCandidate = candidates[0];
@@ -191,12 +200,21 @@ namespace AdventOfCode
                     
                     if (nextNode.Node.Coordinate == _endPoint)
                     {
-                        found = true;
+                        if (nextNodeScore > result && result > -1)
+                        {
+                            continue;
+                        }
                         result = nextNodeScore;
-                        break;
+                        
+                        var bestRoute = new Route(currentCandidate.Path);
+                        bestRoute.AddNodeToPath(nextNode.Node);
+                        bestRoute.Score = result;
+                        _bestRoutes.Add(bestRoute);
+                        
+                        continue;
                     }
                     
-                    var newCandidate = new Route();
+                    var newCandidate = new Route(currentCandidate.Path);
                     newCandidate.AddNodeToPath(nextNode.Node);
                     newCandidate.Score = nextNodeScore;
                     newCandidate.ArrivalDirection = nextDirection;
@@ -206,6 +224,7 @@ namespace AdventOfCode
                 visitedNodes.Add(currentCandidate.CurrentNode);
             }
             
+            Console.WriteLine($"Best Route Score: {result}, Route Cout {_bestRoutes.Count}");
             return result;
         }
 
@@ -274,6 +293,33 @@ namespace AdventOfCode
             }
             
             Console.WriteLine($"Map has {_nodes.Count} nodes");
+        }
+
+        public int GetBestSeatsCount()
+        {
+            var uniqueSpotsOnBestRoutes = new HashSet<Coordinate>();
+
+            foreach (var route in _bestRoutes)
+            {
+                for (var i = 0; i < route.Path.Count-1; i++)
+                {
+                    var source = route.Path[i];
+                    var target = route.Path[i + 1];
+                    var direction = target.Coordinate - source.Coordinate;
+                    direction.X = direction.X == 0 ? 0 : direction.X/Math.Abs(direction.X);
+                    direction.Y = direction.Y == 0 ? 0 : direction.Y/Math.Abs(direction.Y);
+                    var coordToCheck = source.Coordinate;
+                    uniqueSpotsOnBestRoutes.Add(source.Coordinate);
+                    do
+                    {
+                        coordToCheck += direction;
+                        _mazeMap.TryGetCellAtCoordinate(coordToCheck, out var cell);
+                        uniqueSpotsOnBestRoutes.Add(cell.Coordinate);
+                    } while (!coordToCheck.Equals(target.Coordinate));
+                }
+            }
+            
+            return uniqueSpotsOnBestRoutes.Count;
         }
     }
 }

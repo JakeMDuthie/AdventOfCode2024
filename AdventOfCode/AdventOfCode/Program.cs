@@ -7,9 +7,10 @@ namespace AdventOfCode
         public static void Main(string[] args)
         {
             Console.WriteLine("Day 16: Reindeer Maze");
-            var mazeNavigator = new MazeNavigator(@"..\..\Data\reindeerMaze.txt");
+            var mazeNavigator = new MazeNavigator(@"..\..\Data\reindeerMazeTwo.txt");
             mazeNavigator.BuildNodes();
             Console.WriteLine($"SOLUTION pt 1 = {mazeNavigator.GetSmallestNavigationScore()}");
+            Console.WriteLine($"SOLUTION pt 2 = {mazeNavigator.GetBestSeatsCount()}");
         }
 
         private static void Day15()
