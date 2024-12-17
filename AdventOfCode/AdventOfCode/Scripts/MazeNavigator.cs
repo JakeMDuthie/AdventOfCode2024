@@ -33,16 +33,49 @@ namespace AdventOfCode
 
         private class NodeCell : IMazeCell
         {
+            internal struct ConnectingNode
+            {
+                public NodeCell Node { get; }
+                public int Distance { get; }
+
+                public ConnectingNode(NodeCell node, int distance)
+                {
+                    Node = node;
+                    Distance = distance;
+                }
+            }
             public Coordinate Coordinate { get; set; }
-            public List<Coordinate> NeighbourCoordinates { get; } = new List<Coordinate>();
+            private List<Coordinate> NeighbourDirections { get; }
+            public List<ConnectingNode> ConnectingNodes { get; }
+            
 
             public NodeCell(Coordinate coordinate, List<EmptyCell> neighbourCells)
             {
                 Coordinate = coordinate;
 
+                NeighbourDirections = new List<Coordinate>();
                 foreach (var neighbourCell in neighbourCells)
                 {
-                    NeighbourCoordinates.Add(neighbourCell.Coordinate);
+                    NeighbourDirections.Add(neighbourCell.Coordinate-coordinate);
+                }
+            }
+
+            public void FindConnectingNodes(CellMap<IMazeCell> map)
+            {
+                foreach (var direction in NeighbourDirections)
+                {
+                    var coordToCheck = Coordinate + direction;
+                    var distance = 0;
+                    while (map.TryGetCellAtCoordinate(coordToCheck, out var cell) && !(cell is WallCell))
+                    {
+                        distance++;
+                        if (cell is NodeCell nodeCell)
+                        {
+                            ConnectingNodes.Add(new ConnectingNode(nodeCell, distance));
+                            break;
+                        }
+                        coordToCheck += direction;
+                    }
                 }
             }
         }
@@ -158,6 +191,11 @@ namespace AdventOfCode
             foreach (var node in _nodes)
             {
                 _mazeMap.ReplaceCell(node.Coordinate, node);
+            }
+
+            foreach (var node in _nodes)
+            {
+                node.FindConnectingNodes(_mazeMap);
             }
             
             Console.WriteLine($"Map has {_nodes.Count} nodes");
